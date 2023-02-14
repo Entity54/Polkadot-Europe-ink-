@@ -1,0 +1,13 @@
+# Ignore build artifacts from the local tests sub-crate.
+/polkadot_europe/contracts/my_psp22_token/target/
+/polkadot_europe/contracts/oracle/target/
+/polkadot_europe/contracts/treasury_manager/target/
+/my_psp22_token/target/
+
+
+# Ignore backup files creates by cargo fmt.
+**/*.rs.bk
+
+# Remove Cargo.lock when creating an executable, leave it for libraries
+# More information here http://doc.crates.io/guide.html#cargotoml-vs-cargolock
+Cargo.lock
