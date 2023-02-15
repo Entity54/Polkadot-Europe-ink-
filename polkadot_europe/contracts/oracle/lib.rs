@@ -5,7 +5,7 @@
 mod oracle {
 
     use ink_lang::codegen::Env;
-    use polkadot_europe::traits::oracle_dex::*; //ONLY ADDED THIS BECAUSE OTHERWISE  impl OracleDex for Oracle DOES NOT SEE  self.env() IN self.env().caller()
+    use polkadot_europe::traits::oracle_dex::*;
 
     use ink_prelude::{vec, vec::Vec};
     use ink_storage::traits::{PackedLayout, SpreadLayout};
@@ -316,7 +316,7 @@ mod oracle {
             deposited_token: AccountId,
             withdrawn_token: AccountId,
             amount: Balance,
-            swap_caller: AccountId, // ) -> Result<(), PSP22Error> {
+            swap_caller: AccountId,
             use_average_price: bool,
         ) -> Result<Balance, AccessControlError> {
             //

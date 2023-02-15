@@ -11,8 +11,6 @@ pub type FactoryRef = dyn Factory;
 #[openbrush::trait_definition]
 pub trait Factory {
     //
-    // #[ink(message, payable)]
-    // fn launch_treasury_manager(&mut self);
 
     #[ink(message, payable)]
     fn launch_treasury_manager(

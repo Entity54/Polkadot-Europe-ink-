@@ -19,8 +19,6 @@ scale-info = { version = "2", default-features = false, features = ["derive"], o
 # These dependencies
 openbrush = { tag = "v2.3.0", git = "https://github.com/Supercolony-net/openbrush-contracts", default-features = false, features = ["access_control","psp22"] }
 polkadot_europe = { path = "../..", default-features = false }
-
-other_contract = { path = "../other_contract", default-features = false, features = ["ink-as-dependency"] }
 treasury_manager = { path = "../treasury_manager", default-features = false, features = ["ink-as-dependency"] }
 
 
@@ -49,8 +47,5 @@ std = [
     "openbrush/std",
     "polkadot_europe/std",
     "treasury_manager/std",
-
-    "other_contract/std",
-
 ]
 ink-as-dependency = []

@@ -7,9 +7,6 @@ mod pallet {
     use polkadot_europe::traits::factory::*;
     use polkadot_europe::traits::tr_manager::*;
 
-    // use other_contract::OtherContractRef;
-    // use treasury_manager::TreasuryManagerRef;
-
     use ink_prelude::{vec, vec::Vec};
     use ink_storage::traits::{SpreadAllocate, StorageLayout};
 
@@ -70,9 +67,7 @@ mod pallet {
         }
 
         // *** FACTORY ***/
-        //ALICE: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
         ///Launch new treasury_manager
-        // pub fn launch_treasury_manager(&mut self) -> Result<(), AccessControlError> {
         #[ink(message, payable)]
         #[modifiers(only_role(ADMIN))]
         pub fn launch_treasury_manager(
@@ -87,7 +82,6 @@ mod pallet {
         ) -> Result<(), AccessControlError> {
             self.env()
                 .transfer(self.factory_addr, self.env().transferred_value());
-            // FactoryRef::launch_treasury_manager(&self.factory_addr);
 
             FactoryRef::launch_treasury_manager(
                 &self.factory_addr,

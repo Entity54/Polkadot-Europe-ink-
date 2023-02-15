@@ -4,7 +4,6 @@
 #[openbrush::contract]
 pub mod factory_teasury_manager {
 
-    // use other_contract::OtherContractRef;
     use treasury_manager::TreasuryManagerRef;
 
     use ink_lang::codegen::Env;
@@ -22,8 +21,6 @@ pub mod factory_teasury_manager {
         storage::Mapping,
         traits::{Storage, String},
     };
-
-    // 0x9fc82e6768dfecef6bb0ddde7b15d3cf996c532a98640f9e64f76ba8cc6ad688
 
     //Treasury Manager
     // 0x953eaa1a62a4917abbec2361cbc491fa06d18361fe5fc1ca8eb454bc7be7ece0
@@ -46,7 +43,6 @@ pub mod factory_teasury_manager {
 
     impl Factory for FactoryTeasuryManager {
         //
-        // fn launch_treasury_manager(&mut self) {
         #[ink(message, payable)]
         fn launch_treasury_manager(
             &mut self,
@@ -66,7 +62,6 @@ pub mod factory_teasury_manager {
                 self.treasury_manager_owners_vec.push(caller);
             }
 
-            // let new_treasury_manager = OtherContractRef::new(1337)
             let new_treasury_manager = TreasuryManagerRef::new(
                 contract_administrator,
                 contract_manager,
