@@ -1,7 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![feature(min_specialization)]
 
-// use core::convert::TryFrom;
 pub use self::treasury_manager::{TreasuryManager, TreasuryManagerRef};
 
 #[openbrush::contract]
@@ -9,15 +8,13 @@ pub mod treasury_manager {
 
     use ink_lang::codegen::Env;
     use ink_primitives::KeyPtr;
-    // use polkadot_europe::traits::oracle_dex::*;
 
     use polkadot_europe::traits::oracle_dex::*;
     use polkadot_europe::traits::tr_manager::*;
 
     use ink_prelude::{vec, vec::Vec};
-    use ink_storage::traits::{SpreadAllocate, StorageLayout};
-    // use ink_storage::traits::StorageLayout;
     use ink_storage::traits::{PackedLayout, SpreadLayout};
+    use ink_storage::traits::{SpreadAllocate, StorageLayout};
     use openbrush::{
         contracts::{access_control::*, traits::errors::PSP22Error, traits::psp22::PSP22Ref},
         modifiers,
@@ -34,34 +31,11 @@ pub mod treasury_manager {
         PendingToCompleted,
     }
 
-    /// Errors that can occur upon calling this contract.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
-    pub enum Error {
-        /// Returned if caller is not the `sender` while required to.
-        CallerIsNotSender,
-        CallerIsNotRecipient,
-    }
-
-    /// Type alias for the contract's `Result` type.
-    // pub type Result<T> = core::result::Result<T, Error>;
-
-    // #[derive(
-    //     Default,
-    //     Debug,
-    //     Clone,
-    //     scale::Encode,
-    //     scale::Decode,
-    //     SpreadLayout,
-    //     PackedLayout,
-    //     PartialEq,
-    //     Eq,
-    // )]
-    // #[cfg_attr(feature = "std", derive(StorageLayout, scale_info::TypeInfo))]
-    // pub enum PaymentType {
-    //     #[default]
-    //     OneOffFutureTime,
-    //     Instalments,
+    // #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    // #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    // pub enum Error {
+    //     CallerIsNotSender,
+    //     CallerIsNotRecipient,
     // }
 
     #[derive(
@@ -70,7 +44,7 @@ pub mod treasury_manager {
     #[cfg_attr(feature = "std", derive(StorageLayout, scale_info::TypeInfo))]
     pub struct JobInfo {
         id: u32,
-        title: String, //TokenType,
+        title: String,
         applicant: AccountId,
         requested_token: AccountId,
         value_in_usd: bool,
@@ -100,15 +74,63 @@ pub mod treasury_manager {
         PendingToCompleted,
     }
 
+    #[ink(event)]
+    pub struct liability_threshold_breached_top {
+        #[ink(topic)]
+        level_type: u8, //0: ALL 2: 2D 7: 7D 30: 30D
+        #[ink(topic)]
+        current_balance: Balance,
+        #[ink(topic)]
+        top_up_amount: Balance,
+    }
+
+    #[ink(event)]
+    pub struct liability_threshold_breached_med {
+        #[ink(topic)]
+        level_type: u8, //0: ALL 2: 2D 7: 7D 30: 30D
+        #[ink(topic)]
+        current_balance: Balance,
+        #[ink(topic)]
+        liability: Balance,
+    }
+
+    #[ink(event)]
+    pub struct ev_native_payment {
+        #[ink(topic)]
+        job_id: u32,
+        #[ink(topic)]
+        to: AccountId,
+        #[ink(topic)]
+        amount: Balance,
+    }
+
+    #[ink(event)]
+    pub struct ev_native_usd_payment {
+        #[ink(topic)]
+        job_id: u32,
+        #[ink(topic)]
+        to: AccountId,
+        #[ink(topic)]
+        amount: Balance,
+    }
+
+    #[ink(event)]
+    pub struct ev_non_native_payment {
+        #[ink(topic)]
+        job_id: u32,
+        #[ink(topic)]
+        to: AccountId,
+        #[ink(topic)]
+        amount: Balance,
+    }
+
     #[ink(storage)]
     #[derive(Default, SpreadAllocate, Storage)]
     pub struct TreasuryManager {
         #[storage_field]
         access: access_control::Data,
-        // value: bool,
         contract_administrator: AccountId,
         contract_manager: AccountId,
-
         next_id: u32,
         treasury_token_symbol: String,
         treasury_token_address: AccountId,
@@ -120,27 +142,19 @@ pub mod treasury_manager {
         native_payments_usd_ids: Vec<u32>,
         non_native_payments_ids: Vec<u32>,
         non_native_tokens_vec: Vec<AccountId>,
-
         oracle_dex_address: AccountId,
         foreign_assets: Mapping<String, AccountId>,
         foreign_assets_vec: Vec<String>,
-
         check_points_intervals: Vec<u64>,
         liability_in_treasury: Vec<Balance>,
         liability_in_usdt_tokens: Vec<Balance>,
         liability_in_usdt_tokens_treasury: Vec<Balance>,
         liability_health: Vec<u8>,
         liabilities_thresholds: Vec<u8>,
-        // treasury_tokens_balance: Balance,
-
-        // total_liability_in_treasury_tokens: Balance,
-        // liabilities: Mapping<AccountId, Balance>,
         fake_timestamp: u64,
     }
 
     impl TreasureManager for TreasuryManager {
-        //
-
         #[ink(message)]
         #[modifiers(only_role(ADMIN))]
         fn set_manager(&mut self, account: AccountId) -> Result<(), AccessControlError> {
@@ -151,7 +165,7 @@ pub mod treasury_manager {
             Ok(())
         }
 
-        ///Add Job Should be only for ADMIN and MANAGER
+        ///Add Job Should be only for ADMIN
         #[ink(message)]
         #[modifiers(only_role(ADMIN))]
         fn add_job(
@@ -322,7 +336,7 @@ pub mod treasury_manager {
             treasury_token_address: AccountId,
             usdt_token_address: AccountId,
             oracle_dex_address: AccountId,
-            liabilities_threshold_level: u8, //10 for 10% leading to 110%
+            liabilities_threshold_level: u8, //10 for 10% leading to 90% and 80% of contract balance
         ) -> Self {
             ink_lang::codegen::initialize_contract(|instance: &mut Self| {
                 let caller = instance.env().caller();
@@ -335,7 +349,6 @@ pub mod treasury_manager {
                     .expect("Should grant the MANAGER role");
                 instance.contract_administrator = contract_administrator;
                 instance.contract_manager = contract_manager;
-                // instance.value = false;
                 instance.next_id = 0;
                 instance.treasury_token_symbol = treasury_token_symbol;
                 instance.treasury_token_address = treasury_token_address;
@@ -353,12 +366,6 @@ pub mod treasury_manager {
                     .foreign_assets
                     .insert(&String::from("USDT"), &usdt_token_address);
                 instance.foreign_assets_vec = vec![String::from("USDT")];
-
-                // instamce.total_liability_in_treasury_tokens = 0;
-                // instance.treasury_tokens_balance = 0;
-
-                // instance.liabilities = Default::default();
-
                 instance.liabilities_thresholds = vec![
                     (100 - liabilities_threshold_level),
                     (100 - liabilities_threshold_level * 2),
@@ -372,14 +379,6 @@ pub mod treasury_manager {
             })
         }
 
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn set_manager(&mut self, account: AccountId) -> Result<(), AccessControlError> {
-        //     self.grant_role(MANAGER, account)
-        //         .expect("Should grant manager's role");
-        //     Ok(())
-        // }
-
         //FOR TESTING ONLY TO BE DELETED
         #[ink(message)]
         pub fn get_fake_timestamp(&self) -> u64 {
@@ -390,85 +389,6 @@ pub mod treasury_manager {
         pub fn set_fake_timestamp(&mut self, fresh_timestmap: u64) {
             self.fake_timestamp = fresh_timestmap;
         }
-
-        // //TOTO
-        // //MANAGER instead of ADMIN
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn add_non_native_psps22_token(
-        //     &mut self,
-        //     token_address: AccountId,
-        // ) -> Result<(), AccessControlError> {
-        //     if !self.non_native_tokens_vec.contains(&token_address) {
-        //         self.non_native_tokens_vec.push(token_address);
-        //     }
-        //     Ok(())
-        // }
-
-        // ///Add Job Should be only for ADMIN and MANAGER
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn add_job(
-        //     &mut self,
-        //     title: String,
-        //     applicant: AccountId,
-        //     requested_token: AccountId,
-        //     value_in_usd: bool,
-        //     requested_value: Balance,
-        //     payment_type: PaymentType,
-        //     payment_schedule: Vec<u64>,
-        //     payee_accounts: Vec<AccountId>,
-        // ) -> Result<(), AccessControlError> {
-        //     assert!(
-        //         requested_token == self.treasury_token_address
-        //             || self.non_native_tokens_vec.contains(&requested_token),
-        //         "requested_token must be registered"
-        //     );
-
-        //     let mut _value_in_usd = value_in_usd;
-        //     if requested_token != self.treasury_token_address {
-        //         _value_in_usd = false;
-        //     }
-
-        //     let job = JobInfo {
-        //         id: self.next_id,
-        //         title,
-        //         applicant,
-        //         requested_token,
-        //         value_in_usd: _value_in_usd,
-        //         requested_value,
-        //         payment_type,
-        //         payment_schedule,
-        //         payee_accounts,
-        //         next_installment_pointer: 0,
-        //         position_in_vec: self.open_jobs_ids.len() as u32,
-        //     };
-
-        //     self.jobs.insert(&self.next_id, &job);
-        //     self.open_jobs_ids.push(self.next_id);
-        //     self.next_id += 1;
-
-        //     // //Liabilities
-        //     // let mut liability_token_address = requested_token;
-        //     // if requested_token == self.treasury_token_address && value_in_usd {
-        //     //     liability_token_address = self.foreign_assets.get(&String::from("USDT")).unwrap();
-        //     // }
-
-        //     // let updated_liabilitiy = match self.liabilities.get(&liability_token_address) {
-        //     //     Some(amount) => amount + requested_value,
-        //     //     None => requested_value,
-        //     // };
-        //     // self.liabilities
-        //     //     .insert(&liability_token_address, &updated_liabilitiy);
-
-        //     Ok(())
-        // }
-
-        // //MANAGER
-        // #[ink(message)]
-        // pub fn remove_job_info(&mut self, id: u32) {
-        //     self.jobs.remove(&id);
-        // }
 
         #[ink(message)]
         pub fn check_open_jobs(&mut self) {
@@ -682,11 +602,8 @@ pub mod treasury_manager {
             PSP22Ref::balance_of(&token_address, account)
         }
 
-        //For MANAGER ONLY
         #[ink(message)]
-        // #[modifiers(only_role(ADMIN, MANAGER))]
         pub fn make_native_payments(&mut self) -> Result<(), AccessControlError> {
-            // self.native_payments_ids.push(current_job.id);
             let mut new_native_payments_ids = Vec::new();
 
             for job_id in self.native_payments_ids.clone() {
@@ -705,19 +622,11 @@ pub mod treasury_manager {
                             current_job.id
                         );
 
-                        // let updated_liabilitiy =
-                        //     match self.liabilities.get(&self.treasury_token_address) {
-                        //         Some(amount) => amount - requested_value,
-                        //         None => {
-                        //             ink_env::debug_println!(
-                        //                 "NATIVE PAYMENT with id: {} ERROR IN LIABILITIES UPDATE",
-                        //                 current_job.id
-                        //             );
-                        //             0
-                        //         }
-                        //     };
-                        // self.liabilities
-                        //     .insert(&self.treasury_token_address, &updated_liabilitiy);
+                        self.env().emit_event(ev_native_payment {
+                            job_id: job_id,
+                            to: payee_accounts[0],
+                            amount: requested_value,
+                        });
                     }
                     _ => {
                         new_native_payments_ids.push(job_id);
@@ -763,20 +672,11 @@ pub mod treasury_manager {
                             amount
                         );
 
-                        // let usdt_token_address =
-                        //     self.foreign_assets.get(&String::from("USDT")).unwrap();
-                        // let updated_liabilitiy = match self.liabilities.get(&usdt_token_address) {
-                        //     Some(amount) => amount - requested_value,
-                        //     None => {
-                        //         ink_env::debug_println!(
-                        //             "NATIVE USD PAYMENT with id: {} ERROR IN LIABILITIES UPDATE",
-                        //             current_job.id
-                        //         );
-                        //         0
-                        //     }
-                        // };
-                        // self.liabilities
-                        //     .insert(&usdt_token_address, &updated_liabilitiy);
+                        self.env().emit_event(ev_native_usd_payment {
+                            job_id: job_id,
+                            to: payee_accounts[0],
+                            amount: amount,
+                        });
                     }
                     _ => {
                         new_native_usd_payments_ids.push(job_id);
@@ -830,6 +730,13 @@ pub mod treasury_manager {
                             requested_value,
                             amount,
                         );
+
+                        //EVENT
+                        self.env().emit_event(ev_non_native_payment {
+                            job_id: job_id,
+                            to: payee_accounts[0],
+                            amount: amount,
+                        });
                     }
                     _ => {
                         new_non_native_payments_ids.push(job_id);
@@ -1071,6 +978,11 @@ pub mod treasury_manager {
                 );
                 total_2D_treasury_liability_state_health = 0;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_top {
+                    level_type: 2,
+                    current_balance: treasury_tokens_balance,
+                    top_up_amount: top_up_amount,
+                });
             } else if total_2D_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
                     "liability_in_treasury_2D: {} is above liabilities_thresholds LEVEL 2: {} CONSIDER TOPPING UP",
@@ -1079,6 +991,11 @@ pub mod treasury_manager {
                 );
                 total_2D_treasury_liability_state_health = 1;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_med {
+                    level_type: 2,
+                    current_balance: treasury_tokens_balance,
+                    liability: total_2D_treasury_liability,
+                });
             } else {
                 ink_env::debug_println!(
                     "liability_in_treasury_2D: {} ALL GOOD is above liabilities_thresholds LEVEL 2: {}",
@@ -1107,6 +1024,11 @@ pub mod treasury_manager {
                 );
                 total_7D_treasury_liability_state_health = 0;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_top {
+                    level_type: 7,
+                    current_balance: treasury_tokens_balance,
+                    top_up_amount: top_up_amount,
+                });
             } else if total_7D_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
                     "total_7D_treasury_liability: {} is above liabilities_thresholds LEVEL 2: {} CONSIDER TOPPING UP",
@@ -1115,6 +1037,11 @@ pub mod treasury_manager {
                 );
                 total_7D_treasury_liability_state_health = 1;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_med {
+                    level_type: 7,
+                    current_balance: treasury_tokens_balance,
+                    liability: total_7D_treasury_liability,
+                });
             } else {
                 ink_env::debug_println!(
                     "total_7D_treasury_liability: {} ALL GOOD is above liabilities_thresholds LEVEL 2: {}",
@@ -1143,6 +1070,11 @@ pub mod treasury_manager {
                 );
                 total_30D_treasury_liability_state_health = 0;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_top {
+                    level_type: 30,
+                    current_balance: treasury_tokens_balance,
+                    top_up_amount: top_up_amount,
+                });
             } else if total_30D_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
                     "total_30D_treasury_liability: {} is above liabilities_thresholds LEVEL 2: {} CONSIDER TOPPING UP",
@@ -1151,6 +1083,11 @@ pub mod treasury_manager {
                 );
                 total_30D_treasury_liability_state_health = 1;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_med {
+                    level_type: 30,
+                    current_balance: treasury_tokens_balance,
+                    liability: total_30D_treasury_liability,
+                });
             } else {
                 ink_env::debug_println!(
                     "total_30D_treasury_liability: {} ALL GOOD is above liabilities_thresholds LEVEL 2: {}",
@@ -1179,6 +1116,11 @@ pub mod treasury_manager {
                 );
                 total_treasury_liability_state_health = 0;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_top {
+                    level_type: 0,
+                    current_balance: treasury_tokens_balance,
+                    top_up_amount: top_up_amount,
+                });
             } else if total_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
                     "total_treasury_liability: {} is above liabilities_thresholds LEVEL 2: {}  CONSIDER TOPPING UP",
@@ -1187,6 +1129,11 @@ pub mod treasury_manager {
                 );
                 total_treasury_liability_state_health = 1;
                 //EMIT EVENT
+                self.env().emit_event(liability_threshold_breached_med {
+                    level_type: 0,
+                    current_balance: treasury_tokens_balance,
+                    liability: total_treasury_liability,
+                });
             } else {
                 ink_env::debug_println!(
                     "total_treasury_liability: {} ALL GOOD is above liabilities_thresholds LEVEL 2: {}",
@@ -1222,46 +1169,6 @@ pub mod treasury_manager {
             ];
 
             Ok(())
-
-            // let treasury_liabilitiy = self
-            //     .liabilities
-            //     .get(&self.treasury_token_address)
-            //     .unwrap_or_default();
-
-            // let usdt_address = self.foreign_assets.get(&String::from("USDT")).unwrap();
-            // let usdt_address_liabilitiy = self.liabilities.get(&usdt_address).unwrap_or_default();
-            // //GET ORACLE PRICE FOR DOT/USDT
-            // let price = self.get_price_for_pair(self.treasury_token_address, usdt_address);
-            // let usdt_address_liabilitiy_in_treasruy_tokens = usdt_address_liabilitiy / price;
-
-            // let total_liability_in_treasury_tokens =
-            //     treasury_liabilitiy + usdt_address_liabilitiy_in_treasruy_tokens;
-
-            // self.total_liability_in_treasury_tokens = total_liability_in_treasury_tokens;
-
-            // if (total_liability_in_treasury_tokens
-            //     < ((self.treasury_tokens_balance * self.liabilities_thresholds[0]) / 100))
-            // {
-            //     ink_env::debug_println!(
-            //         "total_liability_in_treasury_tokens: {} is below liabilities_thresholds LEVEL 1: {}",
-            //         total_liability_in_treasury_tokens,
-            //         ((self.treasury_tokens_balance * self.liabilities_thresholds[0]) / 100)
-            //     );
-            // } else if (total_liability_in_treasury_tokens
-            //     < ((self.treasury_tokens_balance * self.liabilities_thresholds[1]) / 100))
-            // {
-            //     ink_env::debug_println!(
-            //         "total_liability_in_treasury_tokens: {} is below liabilities_thresholds LEVEL 2: {}",
-            //         total_liability_in_treasury_tokens,
-            //         ((self.treasury_tokens_balance * self.liabilities_thresholds[1]) / 100)
-            //     );
-            // } else {
-            //     ink_env::debug_println!(
-            //         "total_liability_in_treasury_tokens: {} ALL GOOD is above liabilities_thresholds LEVEL 2: {}",
-            //         total_liability_in_treasury_tokens,
-            //         ((self.treasury_tokens_balance * self.liabilities_thresholds[1]) / 100)
-            //     );
-            // }
         }
 
         //For MANAGER ONLY
@@ -1280,44 +1187,6 @@ pub mod treasury_manager {
 
             Ok(())
         }
-
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn admin_withdrawal(&mut self, amount: Balance) -> Result<(), AccessControlError> {
-        //     PSP22Ref::transfer(
-        //         &self.treasury_token_address,
-        //         self.env().caller(),
-        //         amount,
-        //         Vec::<u8>::new(),
-        //     )
-        //     .expect("Transfer to ADMIN did not go well");
-
-        //     //SHOULD EMMIT EVENT
-
-        //     Ok(())
-        // }
-
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn make_deposit(&mut self, amount: Balance) -> Result<(), AccessControlError> {
-        //     let from_caller = self.env().caller().clone();
-        //     let contract = self.env().account_id().clone();
-
-        //     PSP22Ref::transfer_from_builder(
-        //         &self.treasury_token_address,
-        //         from_caller,
-        //         contract,
-        //         amount,
-        //         Vec::<u8>::new(),
-        //     )
-        //     .call_flags(ink_env::CallFlags::default().set_allow_reentry(true))
-        //     .fire()
-        //     .unwrap();
-
-        //     //SHOULD EMMIT EVENT
-
-        //     Ok(())
-        // }
 
         #[ink(message)]
         #[modifiers(only_role(MANAGER))]
