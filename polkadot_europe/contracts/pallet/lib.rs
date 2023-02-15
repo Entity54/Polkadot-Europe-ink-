@@ -66,6 +66,22 @@ mod pallet {
             self.admin
         }
 
+        #[ink(message)]
+        #[modifiers(only_role(ADMIN))]
+        pub fn set_admin_here_and_manager_for_tm(
+            &mut self,
+            account: AccountId,
+        ) -> Result<(), AccessControlError> {
+            self.set_treasury_contract_manager(account);
+
+            self.renounce_role(ADMIN, self.admin);
+            self.grant_role(ADMIN, account)
+                .expect("Should grant admin's role");
+
+            self.admin = account;
+            Ok(())
+        }
+
         // *** FACTORY ***/
         ///Launch new treasury_manager
         #[ink(message, payable)]

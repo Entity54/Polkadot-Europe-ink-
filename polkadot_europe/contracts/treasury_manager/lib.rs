@@ -158,9 +158,8 @@ pub mod treasury_manager {
         #[ink(message)]
         #[modifiers(only_role(ADMIN))]
         fn set_manager(&mut self, account: AccountId) -> Result<(), AccessControlError> {
-            self.grant_role(MANAGER, account)
-                .expect("Should grant manager's role");
-
+            self.renounce_role(MANAGER, self.contract_manager);
+            self._setup_role(MANAGER, account);
             self.contract_manager = account;
             Ok(())
         }
