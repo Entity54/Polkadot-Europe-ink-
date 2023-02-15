@@ -356,7 +356,6 @@ pub mod treasury_manager {
                 instance.open_jobs_ids = Vec::new();
                 instance.pending_jobs_ids = Vec::new();
                 instance.completed_jobs_ids = Vec::new();
-                instance.fake_timestamp = Default::default();
                 instance.native_payments_ids = Default::default();
                 instance.non_native_payments_ids = Default::default();
                 instance.native_payments_usd_ids = Default::default();
@@ -376,6 +375,8 @@ pub mod treasury_manager {
                 instance.liability_in_usdt_tokens = vec![0, 0, 0, 0];
                 instance.liability_in_usdt_tokens_treasury = vec![0, 0, 0, 0];
                 instance.liability_health = vec![2, 2, 2, 2];
+
+                instance.fake_timestamp = Default::default();
             })
         }
 
@@ -389,6 +390,11 @@ pub mod treasury_manager {
         pub fn set_fake_timestamp(&mut self, fresh_timestmap: u64) {
             self.fake_timestamp = fresh_timestmap;
         }
+        //FOR TESTING ONLY TO BE DELETED
+        #[ink(message)]
+        pub fn get_block_timestamp(&self) -> u64 {
+            self.env().block_timestamp()
+        }
 
         #[ink(message)]
         pub fn check_open_jobs(&mut self) {
@@ -397,8 +403,8 @@ pub mod treasury_manager {
             for job_id in &self.open_jobs_ids {
                 let current_job: JobInfo = self.jobs.get(&job_id).unwrap();
 
-                // if self.env().block_timestamp()
-                if self.fake_timestamp > current_job.payment_schedule[0] {
+                // if self.fake_timestamp > current_job.payment_schedule[0]
+                if self.env().block_timestamp() > current_job.payment_schedule[0] {
                     queued_to_move_job_ids.push(current_job.id);
                 }
             }
@@ -440,8 +446,8 @@ pub mod treasury_manager {
                     PaymentType::Instalments => {
                         let installment_num = current_job.next_installment_pointer;
 
-                        // if self.env().block_timestamp()
-                        if self.fake_timestamp
+                        // if self.fake_timestamp
+                        if self.env().block_timestamp()
                             > current_job.payment_schedule[installment_num as usize]
                         {
                             //categorise and push payment
@@ -797,8 +803,9 @@ pub mod treasury_manager {
                 treasury_tokens_balance
             );
 
-            // let current_timestamp = self.env().block_timestamp();
-            let current_timestamp = self.fake_timestamp;
+            let current_timestamp = self.env().block_timestamp();
+            // let current_timestamp = self.fake_timestamp;
+
             let timesstamp_2D = current_timestamp + self.check_points_intervals[0];
             let timesstamp_7D = current_timestamp + self.check_points_intervals[1];
             let timesstamp_30D = current_timestamp + self.check_points_intervals[2];
