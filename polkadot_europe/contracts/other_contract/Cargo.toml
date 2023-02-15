@@ -1,5 +1,5 @@
 [package]
-name = "treasury_manager"
+name = "other_contract"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2021"
@@ -16,14 +16,8 @@ ink_engine = { version = "~3.4.0", default-features = false, optional = true }
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2", default-features = false, features = ["derive"], optional = true }
 
-# These dependencies
-openbrush = { tag = "v2.3.0", git = "https://github.com/Supercolony-net/openbrush-contracts", default-features = false, features = ["access_control","psp22"] }
-
-polkadot_europe = { path = "../..", default-features = false }
-
-
 [lib]
-name = "treasury_manager"
+name = "other_contract"
 path = "lib.rs"
 crate-type = [
 	# Used for normal contract Wasm blobs.
@@ -31,28 +25,15 @@ crate-type = [
     # Used for ABI generation.
     "rlib",
 ]
- 
+
 [features]
 default = ["std"]
 std = [
-    "ink_primitives/std",
-    "ink_metadata",
     "ink_metadata/std",
     "ink_env/std",
     "ink_storage/std",
-    "ink_lang/std",
+    "ink_primitives/std",
     "scale/std",
-    "scale-info",
     "scale-info/std",
-
-    # These dependencies
-    "openbrush/std",
-
-    "polkadot_europe/std"
-
-
 ]
 ink-as-dependency = []
-
-[profile.release]
-overflow-checks = false

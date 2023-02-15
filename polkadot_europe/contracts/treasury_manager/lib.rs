@@ -2,13 +2,14 @@
 #![feature(min_specialization)]
 
 // use core::convert::TryFrom;
+pub use self::treasury_manager::{TreasuryManager, TreasuryManagerRef};
 
 #[openbrush::contract]
-mod treasury_manager {
+pub mod treasury_manager {
 
     use ink_lang::codegen::Env;
     use ink_primitives::KeyPtr;
-    use polkadot_europe::traits::oracle_dex::*; //ONLY ADDED THIS BECAUSE OTHERWISE impl TreasureManager for TreasuryManager  DOES NOT SEE  self.env() IN self.env().caller()
+    // use polkadot_europe::traits::oracle_dex::*;
 
     use polkadot_europe::traits::oracle_dex::*;
     use polkadot_europe::traits::tr_manager::*;
@@ -104,8 +105,10 @@ mod treasury_manager {
     pub struct TreasuryManager {
         #[storage_field]
         access: access_control::Data,
-        value: bool,
-        my_value: Mapping<AccountId, i32>,
+        // value: bool,
+        contract_administrator: AccountId,
+        contract_manager: AccountId,
+
         next_id: u32,
         treasury_token_symbol: String,
         treasury_token_address: AccountId,
@@ -113,7 +116,6 @@ mod treasury_manager {
         open_jobs_ids: Vec<u32>,
         pending_jobs_ids: Vec<u32>,
         completed_jobs_ids: Vec<u32>,
-        fake_timestamp: u64,
         native_payments_ids: Vec<u32>,
         native_payments_usd_ids: Vec<u32>,
         non_native_payments_ids: Vec<u32>,
@@ -129,10 +131,11 @@ mod treasury_manager {
         liability_in_usdt_tokens_treasury: Vec<Balance>,
         liability_health: Vec<u8>,
         liabilities_thresholds: Vec<u8>,
-        treasury_tokens_balance: Balance,
-        // total_liability_in_treasury_tokens: Balance,
+        // treasury_tokens_balance: Balance,
 
+        // total_liability_in_treasury_tokens: Balance,
         // liabilities: Mapping<AccountId, Balance>,
+        fake_timestamp: u64,
     }
 
     impl TreasureManager for TreasuryManager {
@@ -143,6 +146,8 @@ mod treasury_manager {
         fn set_manager(&mut self, account: AccountId) -> Result<(), AccessControlError> {
             self.grant_role(MANAGER, account)
                 .expect("Should grant manager's role");
+
+            self.contract_manager = account;
             Ok(())
         }
 
@@ -192,21 +197,10 @@ mod treasury_manager {
             Ok(())
         }
 
-        //MANAGER
-        #[ink(message)]
-        fn remove_job_info(&mut self, id: u32) {
-            self.jobs.remove(&id);
-        }
-
         #[ink(message)]
         #[modifiers(only_role(ADMIN))]
-        fn set_check_points_intervals(
-            &mut self,
-            checkpoint1: u64,
-            checkpoint2: u64,
-            checkpoint3: u64,
-        ) -> Result<(), AccessControlError> {
-            self.check_points_intervals = vec![checkpoint1, checkpoint2, checkpoint3];
+        fn remove_job_info(&mut self, id: u32) -> Result<(), AccessControlError> {
+            self.jobs.remove(&id);
             Ok(())
         }
 
@@ -248,34 +242,7 @@ mod treasury_manager {
             Ok(())
         }
 
-        #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
-        fn register_foreign_asset(
-            &mut self,
-            token_symbol: String,
-            token_address: AccountId,
-        ) -> Result<(), AccessControlError> {
-            if !self.non_native_tokens_vec.contains(&token_address) {
-                self.non_native_tokens_vec.push(token_address);
-                self.foreign_assets.insert(&token_symbol, &token_address);
-                self.foreign_assets_vec.push(token_symbol);
-            }
-
-            Ok(())
-        }
-
-        // *** ORACLE ***
-
-        ///Set the Oracle_DEX Address that will be used
-        #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
-        fn set_oracle_dex_address(
-            &mut self,
-            oracle_dex_address: AccountId,
-        ) -> Result<(), AccessControlError> {
-            self.oracle_dex_address = oracle_dex_address;
-            Ok(())
-        }
+        //
     }
 
     #[ink(impl)]
@@ -343,13 +310,14 @@ mod treasury_manager {
 
     const ADMIN: RoleType = ink_lang::selector_id!("ADMIN");
     const MANAGER: RoleType = ink_lang::selector_id!("MANAGER");
-    const TELLER: RoleType = ink_lang::selector_id!("TELLER");
 
     impl AccessControl for TreasuryManager {}
 
     impl TreasuryManager {
         #[ink(constructor)]
         pub fn new(
+            contract_administrator: AccountId,
+            contract_manager: AccountId,
             treasury_token_symbol: String,
             treasury_token_address: AccountId,
             usdt_token_address: AccountId,
@@ -360,10 +328,14 @@ mod treasury_manager {
                 let caller = instance.env().caller();
                 instance._init_with_admin(caller);
                 instance
-                    .grant_role(ADMIN, caller)
-                    .expect("Should grant the role");
-                instance.value = false;
-                instance.my_value = Default::default();
+                    .grant_role(ADMIN, contract_administrator)
+                    .expect("Should grant the ADMIN role");
+                instance
+                    .grant_role(MANAGER, contract_manager)
+                    .expect("Should grant the MANAGER role");
+                instance.contract_administrator = contract_administrator;
+                instance.contract_manager = contract_manager;
+                // instance.value = false;
                 instance.next_id = 0;
                 instance.treasury_token_symbol = treasury_token_symbol;
                 instance.treasury_token_address = treasury_token_address;
@@ -383,13 +355,14 @@ mod treasury_manager {
                 instance.foreign_assets_vec = vec![String::from("USDT")];
 
                 // instamce.total_liability_in_treasury_tokens = 0;
-                instance.treasury_tokens_balance = 0;
+                // instance.treasury_tokens_balance = 0;
 
                 // instance.liabilities = Default::default();
 
                 instance.liabilities_thresholds = vec![
-                    (100 + liabilities_threshold_level),
-                    (100 + liabilities_threshold_level * 2),
+                    (100 - liabilities_threshold_level),
+                    (100 - liabilities_threshold_level * 2),
+                    (100 + liabilities_threshold_level * 3),
                 ];
                 instance.check_points_intervals = vec![100, 200, 300];
                 instance.liability_in_treasury = vec![0, 0, 0, 0];
@@ -399,13 +372,13 @@ mod treasury_manager {
             })
         }
 
-        #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
-        pub fn set_manager(&mut self, account: AccountId) -> Result<(), AccessControlError> {
-            self.grant_role(MANAGER, account)
-                .expect("Should grant manager's role");
-            Ok(())
-        }
+        // #[ink(message)]
+        // #[modifiers(only_role(ADMIN))]
+        // pub fn set_manager(&mut self, account: AccountId) -> Result<(), AccessControlError> {
+        //     self.grant_role(MANAGER, account)
+        //         .expect("Should grant manager's role");
+        //     Ok(())
+        // }
 
         //FOR TESTING ONLY TO BE DELETED
         #[ink(message)]
@@ -416,21 +389,6 @@ mod treasury_manager {
         #[ink(message)]
         pub fn set_fake_timestamp(&mut self, fresh_timestmap: u64) {
             self.fake_timestamp = fresh_timestmap;
-        }
-
-        #[ink(message)]
-        pub fn get_treasury_token(&self) -> AccountId {
-            self.treasury_token_address.clone()
-        }
-
-        #[ink(message)]
-        pub fn get_next_id(&self) -> u32 {
-            self.next_id
-        }
-
-        #[ink(message)]
-        pub fn get_non_native_tokens(&self) -> Vec<AccountId> {
-            self.non_native_tokens_vec.clone()
         }
 
         // //TOTO
@@ -505,11 +463,6 @@ mod treasury_manager {
 
         //     Ok(())
         // }
-
-        #[ink(message)]
-        pub fn get_job_info(&self, id: u32) -> JobInfo {
-            self.jobs.get(&id).unwrap()
-        }
 
         // //MANAGER
         // #[ink(message)]
@@ -623,6 +576,34 @@ mod treasury_manager {
         }
 
         #[ink(message)]
+        pub fn get_admin_account(&self) -> AccountId {
+            self.contract_administrator.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_manager_account(&self) -> AccountId {
+            self.contract_manager.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_job_info(&self, id: u32) -> JobInfo {
+            self.jobs.get(&id).unwrap()
+        }
+
+        #[ink(message)]
+        pub fn get_next_id(&self) -> u32 {
+            self.next_id
+        }
+        #[ink(message)]
+        pub fn get_treasury_token_symbol(&self) -> String {
+            self.treasury_token_symbol.clone()
+        }
+        #[ink(message)]
+        pub fn get_treasury_token(&self) -> AccountId {
+            self.treasury_token_address.clone()
+        }
+
+        #[ink(message)]
         pub fn get_open_jobs_ids(&self) -> Vec<u32> {
             self.open_jobs_ids.clone()
         }
@@ -650,9 +631,60 @@ mod treasury_manager {
             self.non_native_payments_ids.clone()
         }
 
+        #[ink(message)]
+        pub fn get_non_native_tokens_vec(&self) -> Vec<AccountId> {
+            self.non_native_tokens_vec.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_liability_thresholds(&self) -> Vec<u8> {
+            self.liabilities_thresholds.clone()
+        }
+        #[ink(message)]
+        pub fn get_liability_health(&self) -> Vec<u8> {
+            self.liability_health.clone()
+        }
+        #[ink(message)]
+        pub fn get_liability_in_usdt_tokens_treasury(&self) -> Vec<Balance> {
+            self.liability_in_usdt_tokens_treasury.clone()
+        }
+        #[ink(message)]
+        pub fn get_liability_in_usdt_tokens(&self) -> Vec<Balance> {
+            self.liability_in_usdt_tokens.clone()
+        }
+        #[ink(message)]
+        pub fn get_liability_in_treasury(&self) -> Vec<Balance> {
+            self.liability_in_treasury.clone()
+        }
+        #[ink(message)]
+        pub fn get_check_points_intervals(&self) -> Vec<u64> {
+            self.check_points_intervals.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_foreign_assets_vec(&self) -> Vec<String> {
+            self.foreign_assets_vec.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_foreign_asset_account(&self, symbol: String) -> AccountId {
+            self.foreign_assets.get(&symbol).unwrap_or_default()
+        }
+
+        #[ink(message)]
+        pub fn get_oracle_dex_address(&self) -> AccountId {
+            self.oracle_dex_address.clone()
+        }
+
+        //FOR TESTING ONLY AS IT CAN BE FOUND DIRECTLY FROM PSP22
+        #[ink(message)]
+        pub fn get_balance(&self, token_address: AccountId, account: AccountId) -> Balance {
+            PSP22Ref::balance_of(&token_address, account)
+        }
+
         //For MANAGER ONLY
         #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
+        // #[modifiers(only_role(ADMIN, MANAGER))]
         pub fn make_native_payments(&mut self) -> Result<(), AccessControlError> {
             // self.native_payments_ids.push(current_job.id);
             let mut new_native_payments_ids = Vec::new();
@@ -703,7 +735,7 @@ mod treasury_manager {
 
         //For MANAGER ONLY
         #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
+        // #[modifiers(only_role(ADMIN, MANAGER))]
         pub fn make_native_usd_payments(&mut self) -> Result<(), AccessControlError> {
             // self.native_payments_usd_ids.push(current_job.id);
 
@@ -762,7 +794,7 @@ mod treasury_manager {
 
         //For MANAGER ONLY
         #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
+        // #[modifiers(only_role(ADMIN, MANAGER))]
         pub fn make_non_native_payments(&mut self) -> Result<(), AccessControlError> {
             let mut new_non_native_payments_ids = Vec::new();
 
@@ -798,21 +830,6 @@ mod treasury_manager {
                             requested_value,
                             amount,
                         );
-
-                        // let usdt_token_address =
-                        //     self.foreign_assets.get(&String::from("USDT")).unwrap();
-                        // let updated_liabilitiy = match self.liabilities.get(&usdt_token_address) {
-                        //     Some(amount) => amount - requested_value,
-                        //     None => {
-                        //         ink_env::debug_println!(
-                        //             "NON NATIVE PAYMENT with id: {} ERROR IN LIABILITIES UPDATE",
-                        //             current_job.id
-                        //         );
-                        //         0
-                        //     }
-                        // };
-                        // self.liabilities
-                        //     .insert(&usdt_token_address, &updated_liabilitiy);
                     }
                     _ => {
                         new_non_native_payments_ids.push(job_id);
@@ -829,44 +846,60 @@ mod treasury_manager {
         }
 
         #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
+        #[modifiers(only_role(MANAGER))]
         pub fn set_liabilities_thresholds(
             &mut self,
             liabilities_threshold_level1: u8,
-            liabilities_threshold_level2: u8,
+            // liabilities_threshold_level2: u8,
         ) -> Result<(), AccessControlError> {
-            assert!(
-                liabilities_threshold_level1 < liabilities_threshold_level2,
-                "liabilities_threshold_level1 must be lower than liabilities_threshold_level2"
-            );
+            // assert!(
+            //     liabilities_threshold_level1 < liabilities_threshold_level2,
+            //     "liabilities_threshold_level1 must be lower than liabilities_threshold_level2"
+            // );
             self.liabilities_thresholds = vec![
-                100 + liabilities_threshold_level1,
-                100 + liabilities_threshold_level2,
+                (100 - liabilities_threshold_level1),
+                (100 - liabilities_threshold_level1 * 2),
+                (100 + liabilities_threshold_level1 * 3),
             ];
             Ok(())
         }
 
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn set_check_points_intervals(
-        //     &mut self,
-        //     checkpoint1: u64,
-        //     checkpoint2: u64,
-        //     checkpoint3: u64,
-        // ) -> Result<(), AccessControlError> {
-        //     self.check_points_intervals = vec![checkpoint1, checkpoint2, checkpoint3];
-        //     Ok(())
-        // }
+        #[ink(message)]
+        #[modifiers(only_role(MANAGER))]
+        pub fn set_check_points_intervals(
+            &mut self,
+            checkpoint1: u64,
+            checkpoint2: u64,
+            checkpoint3: u64,
+        ) -> Result<(), AccessControlError> {
+            self.check_points_intervals = vec![checkpoint1, checkpoint2, checkpoint3];
+            Ok(())
+        }
 
         //For MANAGER ONLY
         #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
+        // #[modifiers(only_role(ADMIN, MANAGER))]
         pub fn calculate_liabilities(&mut self) -> Result<(), AccessControlError> {
+            let treasury_tokens_balance = PSP22Ref::balance_of(
+                &self.treasury_token_address,
+                self.env().account_id().clone(),
+            );
+
+            ink_env::debug_println!(
+                "calculate_liabilities treasury_tokens_balance: {}",
+                treasury_tokens_balance
+            );
+
             // let current_timestamp = self.env().block_timestamp();
             let current_timestamp = self.fake_timestamp;
             let timesstamp_2D = current_timestamp + self.check_points_intervals[0];
             let timesstamp_7D = current_timestamp + self.check_points_intervals[1];
             let timesstamp_30D = current_timestamp + self.check_points_intervals[2];
+
+            ink_env::debug_println!(
+                "calculate_liabilities current_timestamp: {} timesstamp_2D: {} timesstamp_7D: {} timesstamp_30D: {}",
+                current_timestamp,timesstamp_2D,timesstamp_7D,timesstamp_30D
+            );
 
             //Keeps hold of payments in treasury tokens e.g. DOT
             let mut liability_in_treasury: Balance = 0;
@@ -887,6 +920,12 @@ mod treasury_manager {
 
             let usdt_address = self.foreign_assets.get(&String::from("USDT")).unwrap();
             let price = self.get_price_for_pair(self.treasury_token_address, usdt_address);
+
+            ink_env::debug_println!(
+                "calculate_liabilities price: {} usdt_address: {:?}",
+                price,
+                usdt_address
+            );
 
             for job_id in self.open_jobs_ids.clone() {
                 let current_job: JobInfo = self.jobs.get(&job_id).unwrap();
@@ -932,6 +971,19 @@ mod treasury_manager {
                 }
             }
 
+            ink_env::debug_println!(
+                "calculate_liabilities liability_in_treasury: {} liability_in_treasury_2D: {} liability_in_treasury_7D: {} liability_in_treasury_30D: {}",
+                liability_in_treasury,liability_in_treasury_2D,liability_in_treasury_7D,liability_in_treasury_30D
+            );
+            ink_env::debug_println!(
+                "calculate_liabilities liability_in_usdt_tokens: {} liability_in_usdt_2D: {} liability_in_usdt_7D: {} liability_in_usdt_30D: {}",
+                liability_in_usdt_tokens,liability_in_usdt_2D,liability_in_usdt_7D,liability_in_usdt_30D
+            );
+            ink_env::debug_println!(
+                "calculate_liabilities liability_in_usdt_tokens_treasury: {} liability_in_usdt_2D_treasury: {} liability_in_usdt_7D_treasury: {} liability_in_usdt_30D_treasury: {}",
+                liability_in_usdt_tokens_treasury,liability_in_usdt_2D_treasury,liability_in_usdt_7D_treasury,liability_in_usdt_30D_treasury
+            );
+
             for job_id in self.pending_jobs_ids.clone() {
                 let current_job: JobInfo = self.jobs.get(&job_id).unwrap();
 
@@ -976,27 +1028,52 @@ mod treasury_manager {
                 }
             }
 
-            let threshold_1 = (self.treasury_tokens_balance
-                * (self.liabilities_thresholds[0 as usize]) as u128)
-                / 100;
-            let threshold_2 = (self.treasury_tokens_balance
-                * (self.liabilities_thresholds[1 as usize]) as u128)
-                / 100;
+            ink_env::debug_println!(
+                "calculate_liabilities liability_in_treasury: {} liability_in_treasury_2D: {} liability_in_treasury_7D: {} liability_in_treasury_30D: {}",
+                liability_in_treasury,liability_in_treasury_2D,liability_in_treasury_7D,liability_in_treasury_30D
+            );
+            ink_env::debug_println!(
+                "calculate_liabilities liability_in_usdt_tokens: {} liability_in_usdt_2D: {} liability_in_usdt_7D: {} liability_in_usdt_30D: {}",
+                liability_in_usdt_tokens,liability_in_usdt_2D,liability_in_usdt_7D,liability_in_usdt_30D
+            );
+            ink_env::debug_println!(
+                "calculate_liabilities liability_in_usdt_tokens_treasury: {} liability_in_usdt_2D_treasury: {} liability_in_usdt_7D_treasury: {} liability_in_usdt_30D_treasury: {}",
+                liability_in_usdt_tokens_treasury,liability_in_usdt_2D_treasury,liability_in_usdt_7D_treasury,liability_in_usdt_30D_treasury
+            );
+
+            let threshold_1 =
+                (treasury_tokens_balance * (self.liabilities_thresholds[0 as usize]) as u128) / 100;
+            let threshold_2 =
+                (treasury_tokens_balance * (self.liabilities_thresholds[1 as usize]) as u128) / 100;
 
             let total_2D_treasury_liability =
                 liability_in_treasury_2D + liability_in_usdt_2D_treasury;
             let mut total_2D_treasury_liability_state_health = 2;
-            if total_2D_treasury_liability < threshold_1 {
+
+            ink_env::debug_println!(
+                "calculate_liabilities threshold_1: {} threshold_2: {} total_2D_treasury_liability: {} total_2D_treasury_liability_state_health: {} liability_in_treasury_2D {} liability_in_usdt_2D_treasury {}",
+                threshold_1,threshold_2,total_2D_treasury_liability,total_2D_treasury_liability_state_health,liability_in_treasury_2D,liability_in_usdt_2D_treasury
+            );
+
+            if total_2D_treasury_liability > threshold_1 {
+                let top_up_target = (total_2D_treasury_liability
+                    * (self.liabilities_thresholds[2 as usize]) as u128)
+                    / 100;
+                let mut top_up_amount = 0;
+                if top_up_target >= treasury_tokens_balance {
+                    top_up_amount = top_up_target - treasury_tokens_balance
+                }
+
                 ink_env::debug_println!(
-                    "liability_in_treasury_2D: {} is below liabilities_thresholds LEVEL 1: {}",
+                    "liability_in_treasury_2D: {} is above liabilities_thresholds LEVEL 1: {} treasury_tokens_balance: {} top_up_target: {} TOP UP NOW WITH  top_up_amount: {}",
                     total_2D_treasury_liability,
-                    threshold_1
+                    threshold_1, treasury_tokens_balance, top_up_target,  top_up_amount
                 );
                 total_2D_treasury_liability_state_health = 0;
                 //EMIT EVENT
-            } else if total_2D_treasury_liability < threshold_2 {
+            } else if total_2D_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
-                    "liability_in_treasury_2D: {} is below liabilities_thresholds LEVEL 2: {}",
+                    "liability_in_treasury_2D: {} is above liabilities_thresholds LEVEL 2: {} CONSIDER TOPPING UP",
                     total_2D_treasury_liability,
                     threshold_2
                 );
@@ -1014,17 +1091,25 @@ mod treasury_manager {
             let total_7D_treasury_liability =
                 liability_in_treasury_7D + liability_in_usdt_7D_treasury;
             let mut total_7D_treasury_liability_state_health = 2;
-            if total_7D_treasury_liability < threshold_1 {
+            if total_7D_treasury_liability > threshold_1 {
+                let top_up_target = (total_7D_treasury_liability
+                    * (self.liabilities_thresholds[2 as usize]) as u128)
+                    / 100;
+                let mut top_up_amount = 0;
+                if top_up_target >= treasury_tokens_balance {
+                    top_up_amount = top_up_target - treasury_tokens_balance
+                }
+
                 ink_env::debug_println!(
-                    "total_7D_treasury_liability: {} is below liabilities_thresholds LEVEL 1: {}",
+                    "total_7D_treasury_liability: {} is above liabilities_thresholds LEVEL 1: {} treasury_tokens_balance: {} top_up_target: {} TOP UP NOW WITH  top_up_amount: {}",
                     total_7D_treasury_liability,
-                    threshold_1
+                    threshold_1, treasury_tokens_balance, top_up_target,  top_up_amount
                 );
                 total_7D_treasury_liability_state_health = 0;
                 //EMIT EVENT
-            } else if total_7D_treasury_liability < threshold_2 {
+            } else if total_7D_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
-                    "total_7D_treasury_liability: {} is below liabilities_thresholds LEVEL 2: {}",
+                    "total_7D_treasury_liability: {} is above liabilities_thresholds LEVEL 2: {} CONSIDER TOPPING UP",
                     total_7D_treasury_liability,
                     threshold_2
                 );
@@ -1042,17 +1127,25 @@ mod treasury_manager {
             let total_30D_treasury_liability =
                 liability_in_treasury_30D + liability_in_usdt_30D_treasury;
             let mut total_30D_treasury_liability_state_health = 2;
-            if total_30D_treasury_liability < threshold_1 {
+            if total_30D_treasury_liability > threshold_1 {
+                let top_up_target = (total_30D_treasury_liability
+                    * (self.liabilities_thresholds[2 as usize]) as u128)
+                    / 100;
+                let mut top_up_amount = 0;
+                if top_up_target >= treasury_tokens_balance {
+                    top_up_amount = top_up_target - treasury_tokens_balance
+                }
+
                 ink_env::debug_println!(
-                    "total_30D_treasury_liability: {} is below liabilities_thresholds LEVEL 1: {}",
+                    "total_30D_treasury_liability: {} is above liabilities_thresholds LEVEL 1: {} treasury_tokens_balance: {} top_up_target: {} TOP UP NOW WITH  top_up_amount: {}",
                     total_30D_treasury_liability,
-                    threshold_1
+                    threshold_1, treasury_tokens_balance, top_up_target,  top_up_amount
                 );
                 total_30D_treasury_liability_state_health = 0;
                 //EMIT EVENT
-            } else if total_30D_treasury_liability < threshold_2 {
+            } else if total_30D_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
-                    "total_30D_treasury_liability: {} is below liabilities_thresholds LEVEL 2: {}",
+                    "total_30D_treasury_liability: {} is above liabilities_thresholds LEVEL 2: {} CONSIDER TOPPING UP",
                     total_30D_treasury_liability,
                     threshold_2
                 );
@@ -1070,17 +1163,25 @@ mod treasury_manager {
             let total_treasury_liability =
                 liability_in_treasury + liability_in_usdt_tokens_treasury;
             let mut total_treasury_liability_state_health = 2;
-            if total_treasury_liability < threshold_1 {
+            if total_treasury_liability > threshold_1 {
+                let top_up_target = (total_treasury_liability
+                    * (self.liabilities_thresholds[2 as usize]) as u128)
+                    / 100;
+                let mut top_up_amount = 0;
+                if top_up_target >= treasury_tokens_balance {
+                    top_up_amount = top_up_target - treasury_tokens_balance
+                }
+
                 ink_env::debug_println!(
-                    "total_treasury_liability: {} is below liabilities_thresholds LEVEL 1: {}",
+                    "total_treasury_liability: {} is above liabilities_thresholds LEVEL 1: {} treasury_tokens_balance: {} top_up_target: {} TOP UP NOW WITH  top_up_amount: {}",
                     total_treasury_liability,
-                    threshold_1
+                    threshold_1, treasury_tokens_balance, top_up_target,  top_up_amount
                 );
                 total_treasury_liability_state_health = 0;
                 //EMIT EVENT
-            } else if total_treasury_liability < threshold_2 {
+            } else if total_treasury_liability > threshold_2 {
                 ink_env::debug_println!(
-                    "total_treasury_liability: {} is below liabilities_thresholds LEVEL 2: {}",
+                    "total_treasury_liability: {} is above liabilities_thresholds LEVEL 2: {}  CONSIDER TOPPING UP",
                     total_treasury_liability,
                     threshold_2
                 );
@@ -1163,20 +1264,9 @@ mod treasury_manager {
             // }
         }
 
-        #[ink(message)]
-        pub fn get_liability_thresholds(&self) -> Vec<u8> {
-            self.liabilities_thresholds.clone()
-        }
-
-        //FOR TESTING ONLY AS IT CAN BE FOUND DIRECTLY FROM PSP22
-        #[ink(message)]
-        pub fn get_balance(&self, token_address: AccountId, account: AccountId) -> Balance {
-            PSP22Ref::balance_of(&token_address, account)
-        }
-
         //For MANAGER ONLY
-        #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
+        // #[ink(message)]
+        // #[modifiers(only_role(ADMIN, MANAGER))]
         pub fn make_transfer_to(
             &mut self,
             token_address: AccountId,
@@ -1229,37 +1319,37 @@ mod treasury_manager {
         //     Ok(())
         // }
 
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn register_foreign_asset(
-        //     &mut self,
-        //     token_symbol: String,
-        //     token_address: AccountId,
-        // ) -> Result<(), AccessControlError> {
-        //     match self.foreign_assets.get(&token_symbol) {
-        //         Some(_) => (),
-        //         None => {
-        //             self.foreign_assets.insert(&token_symbol, &token_address);
-        //             self.foreign_assets_vec.push(token_symbol);
-        //         }
-        //     }
+        #[ink(message)]
+        #[modifiers(only_role(MANAGER))]
+        pub fn register_foreign_asset(
+            &mut self,
+            token_symbol: String,
+            token_address: AccountId,
+        ) -> Result<(), AccessControlError> {
+            match self.foreign_assets.get(&token_symbol) {
+                Some(_) => (),
+                None => {
+                    self.foreign_assets.insert(&token_symbol, &token_address);
+                    self.foreign_assets_vec.push(token_symbol);
+                }
+            }
 
-        //     Ok(())
-        // }
+            Ok(())
+        }
 
         // ***        ***
         // *** ORACLE ***
 
-        // ///Set the Oracle_DEX Address that will be used
-        // #[ink(message)]
-        // #[modifiers(only_role(ADMIN))]
-        // pub fn set_oracle_dex_address(
-        //     &mut self,
-        //     oracle_dex_address: AccountId,
-        // ) -> Result<(), AccessControlError> {
-        //     self.oracle_dex_address = oracle_dex_address;
-        //     Ok(())
-        // }
+        ///Set the Oracle_DEX Address that will be used
+        #[ink(message)]
+        #[modifiers(only_role(MANAGER))]
+        pub fn set_oracle_dex_address(
+            &mut self,
+            oracle_dex_address: AccountId,
+        ) -> Result<(), AccessControlError> {
+            self.oracle_dex_address = oracle_dex_address;
+            Ok(())
+        }
 
         ///Get Pair Price from Oracle
         #[ink(message)]

@@ -42,32 +42,11 @@ pub trait TreasureManager {
     ) -> Result<(), AccessControlError>;
 
     #[ink(message)]
-    fn remove_job_info(&mut self, id: u32);
-
-    #[ink(message)]
-    fn set_check_points_intervals(
-        &mut self,
-        checkpoint1: u64,
-        checkpoint2: u64,
-        checkpoint3: u64,
-    ) -> Result<(), AccessControlError>;
+    fn remove_job_info(&mut self, id: u32) -> Result<(), AccessControlError>;
 
     #[ink(message)]
     fn admin_withdrawal(&mut self, amount: Balance) -> Result<(), AccessControlError>;
 
     #[ink(message)]
     fn make_deposit(&mut self, amount: Balance) -> Result<(), AccessControlError>;
-
-    #[ink(message)]
-    fn register_foreign_asset(
-        &mut self,
-        token_symbol: String,
-        token_address: AccountId,
-    ) -> Result<(), AccessControlError>;
-
-    #[ink(message)]
-    fn set_oracle_dex_address(
-        &mut self,
-        oracle_dex_address: AccountId,
-    ) -> Result<(), AccessControlError>;
 }

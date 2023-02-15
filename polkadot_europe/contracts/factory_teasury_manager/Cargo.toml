@@ -1,5 +1,5 @@
 [package]
-name = "treasury_manager"
+name = "factory_teasury_manager"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2021"
@@ -18,20 +18,20 @@ scale-info = { version = "2", default-features = false, features = ["derive"], o
 
 # These dependencies
 openbrush = { tag = "v2.3.0", git = "https://github.com/Supercolony-net/openbrush-contracts", default-features = false, features = ["access_control","psp22"] }
-
 polkadot_europe = { path = "../..", default-features = false }
+
+other_contract = { path = "../other_contract", default-features = false, features = ["ink-as-dependency"] }
+treasury_manager = { path = "../treasury_manager", default-features = false, features = ["ink-as-dependency"] }
 
 
 [lib]
-name = "treasury_manager"
+name = "factory_teasury_manager"
 path = "lib.rs"
 crate-type = [
 	# Used for normal contract Wasm blobs.
 	"cdylib",
-    # Used for ABI generation.
-    "rlib",
 ]
- 
+
 [features]
 default = ["std"]
 std = [
@@ -47,12 +47,10 @@ std = [
 
     # These dependencies
     "openbrush/std",
+    "polkadot_europe/std",
+    "treasury_manager/std",
 
-    "polkadot_europe/std"
-
+    "other_contract/std",
 
 ]
 ink-as-dependency = []
-
-[profile.release]
-overflow-checks = false
