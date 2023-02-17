@@ -1,6 +1,6 @@
 ![license](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&style=flat-square)
 
-## Please use at your own risk. This a submission is for Polakdot Europ Hackathon February 2023. It is not production/battle-tested and audited software.
+## Please use at your own risk. This a submission is for Polakdot Europe Hackathon February 2023. It is not production/battle-tested and audited software.
 
 <br>
 
