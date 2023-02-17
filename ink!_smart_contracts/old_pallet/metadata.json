@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xfc5f0aacdbd70459424c1d873d09b179df6583187809d522588004db0ebb8714",
+    "hash": "0xa4aeb069840172f9df63fda80d27912a11a28d57614f29ba165730bfd9eebaea",
     "language": "ink! 3.4.0",
     "compiler": "rustc 1.67.0-nightly"
   },
@@ -225,15 +225,6 @@
               }
             },
             {
-              "label": "hash",
-              "type": {
-                "displayName": [
-                  "String"
-                ],
-                "type": 14
-              }
-            },
-            {
               "label": "applicant",
               "type": {
                 "displayName": [
@@ -406,18 +397,131 @@
           "selector": "0x51f5aa1e"
         },
         {
-          "args": [],
-          "docs": [],
-          "label": "terminate_treasury_manager",
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RevokeRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RevokeRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Revokes `role` from `account`.",
+            "",
+            " On success a `RoleRevoked` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `MissingRole` error if caller can't grant the `role` or if `account` doesn't have `role`."
+          ],
+          "label": "AccessControl::revoke_role",
           "mutates": true,
           "payable": false,
           "returnType": {
             "displayName": [
-              "Result"
+              "accesscontrol_external",
+              "RevokeRoleOutput"
             ],
             "type": 12
           },
-          "selector": "0xb27fbb01"
+          "selector": "0x6e4f0991"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "HasRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "address",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "HasRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Returns `true` if `account` has been granted `role`."
+          ],
+          "label": "AccessControl::has_role",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "HasRoleOutput"
+            ],
+            "type": 16
+          },
+          "selector": "0xc1d9ac18"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "GrantRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "GrantRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Grants `role` to `account`.",
+            "",
+            " On success a `RoleGranted` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `MissingRole` error if caller can't grant the role.",
+            " Returns with `RoleRedundant` error `account` has `role`."
+          ],
+          "label": "AccessControl::grant_role",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "GrantRoleOutput"
+            ],
+            "type": 12
+          },
+          "selector": "0x4ac062fd"
         },
         {
           "args": [
@@ -494,133 +598,6 @@
             "type": 12
           },
           "selector": "0xeaf1248a"
-        },
-        {
-          "args": [
-            {
-              "label": "role",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "HasRoleInput1"
-                ],
-                "type": 1
-              }
-            },
-            {
-              "label": "address",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "HasRoleInput2"
-                ],
-                "type": 6
-              }
-            }
-          ],
-          "docs": [
-            " Returns `true` if `account` has been granted `role`."
-          ],
-          "label": "AccessControl::has_role",
-          "mutates": false,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "accesscontrol_external",
-              "HasRoleOutput"
-            ],
-            "type": 16
-          },
-          "selector": "0xc1d9ac18"
-        },
-        {
-          "args": [
-            {
-              "label": "role",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "RevokeRoleInput1"
-                ],
-                "type": 1
-              }
-            },
-            {
-              "label": "account",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "RevokeRoleInput2"
-                ],
-                "type": 6
-              }
-            }
-          ],
-          "docs": [
-            " Revokes `role` from `account`.",
-            "",
-            " On success a `RoleRevoked` event is emitted.",
-            "",
-            " # Errors",
-            "",
-            " Returns with `MissingRole` error if caller can't grant the `role` or if `account` doesn't have `role`."
-          ],
-          "label": "AccessControl::revoke_role",
-          "mutates": true,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "accesscontrol_external",
-              "RevokeRoleOutput"
-            ],
-            "type": 12
-          },
-          "selector": "0x6e4f0991"
-        },
-        {
-          "args": [
-            {
-              "label": "role",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "GrantRoleInput1"
-                ],
-                "type": 1
-              }
-            },
-            {
-              "label": "account",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "GrantRoleInput2"
-                ],
-                "type": 6
-              }
-            }
-          ],
-          "docs": [
-            " Grants `role` to `account`.",
-            "",
-            " On success a `RoleGranted` event is emitted.",
-            "",
-            " # Errors",
-            "",
-            " Returns with `MissingRole` error if caller can't grant the role.",
-            " Returns with `RoleRedundant` error `account` has `role`."
-          ],
-          "label": "AccessControl::grant_role",
-          "mutates": true,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "accesscontrol_external",
-              "GrantRoleOutput"
-            ],
-            "type": 12
-          },
-          "selector": "0x4ac062fd"
         }
       ]
     },

@@ -45,7 +45,6 @@ pub mod treasury_manager {
     pub struct JobInfo {
         id: u32,
         title: String,
-        hash: String,
         applicant: AccountId,
         requested_token: AccountId,
         value_in_usd: bool,
@@ -171,7 +170,6 @@ pub mod treasury_manager {
         fn add_job(
             &mut self,
             title: String,
-            hash: String,
             applicant: AccountId,
             requested_token: AccountId,
             value_in_usd: bool,
@@ -194,7 +192,6 @@ pub mod treasury_manager {
             let job = JobInfo {
                 id: self.next_id,
                 title,
-                hash,
                 applicant,
                 requested_token,
                 value_in_usd: _value_in_usd,
@@ -223,27 +220,16 @@ pub mod treasury_manager {
         #[ink(message)]
         #[modifiers(only_role(ADMIN))]
         fn admin_withdrawal(&mut self, amount: Balance) -> Result<(), AccessControlError> {
-            //APPROVE FIRST
-            PSP22Ref::approve(&self.treasury_token_address, self.env().caller(), amount)
-                .expect("Approval for ADMIN withdrawing treasury_token did not go well");
-
-            // PSP22Ref::transfer(
-            //     &self.treasury_token_address,
-            //     self.env().caller(),
-            //     amount,
-            //     Vec::<u8>::new(),
-            // )
-            // .expect("Transfer to ADMIN did not go well");
+            PSP22Ref::transfer(
+                &self.treasury_token_address,
+                self.env().caller(),
+                amount,
+                Vec::<u8>::new(),
+            )
+            .expect("Transfer to ADMIN did not go well");
 
             //SHOULD EMMIT EVENT
 
-            Ok(())
-        }
-
-        #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
-        fn terminate_me(&mut self) -> Result<(), AccessControlError> {
-            self.env().terminate_contract(self.env().caller());
             Ok(())
         }
 

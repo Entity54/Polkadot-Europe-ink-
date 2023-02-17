@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x0beaa08a003b717be7fea54601173d4826baa6708955a0b3dfbf142f44fe1468",
+    "hash": "0xe5da540624b2661161e7d3fea34ea2f7f3a92765de1844a3beb667217956da0f",
     "language": "ink! 3.4.0",
     "compiler": "rustc 1.67.0-nightly"
   },
@@ -1037,6 +1037,32 @@
         {
           "args": [
             {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "MakeDepositInput1"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "TreasureManager::make_deposit",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "treasuremanager_external",
+              "MakeDepositOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x3a99e1da"
+        },
+        {
+          "args": [
+            {
               "label": "account",
               "type": {
                 "displayName": [
@@ -1063,43 +1089,100 @@
         {
           "args": [
             {
-              "label": "amount",
+              "label": "title",
               "type": {
                 "displayName": [
                   "treasuremanager_external",
-                  "MakeDepositInput1"
+                  "AddJobInput1"
+                ],
+                "type": 12
+              }
+            },
+            {
+              "label": "applicant",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput2"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "requested_token",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput3"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "value_in_usd",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput4"
+                ],
+                "type": 15
+              }
+            },
+            {
+              "label": "requested_value",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput5"
                 ],
                 "type": 16
               }
+            },
+            {
+              "label": "payment_type",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput6"
+                ],
+                "type": 17
+              }
+            },
+            {
+              "label": "payment_schedule",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput7"
+                ],
+                "type": 18
+              }
+            },
+            {
+              "label": "payee_accounts",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput8"
+                ],
+                "type": 20
+              }
             }
           ],
-          "docs": [],
-          "label": "TreasureManager::make_deposit",
+          "docs": [
+            "Add Job Should be only for ADMIN"
+          ],
+          "label": "TreasureManager::add_job",
           "mutates": true,
           "payable": false,
           "returnType": {
             "displayName": [
               "treasuremanager_external",
-              "MakeDepositOutput"
+              "AddJobOutput"
             ],
             "type": 29
           },
-          "selector": "0x3a99e1da"
-        },
-        {
-          "args": [],
-          "docs": [],
-          "label": "TreasureManager::terminate_me",
-          "mutates": true,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "treasuremanager_external",
-              "TerminateMeOutput"
-            ],
-            "type": 29
-          },
-          "selector": "0x743c6181"
+          "selector": "0x69336f9d"
         },
         {
           "args": [
@@ -1130,110 +1213,91 @@
         {
           "args": [
             {
-              "label": "title",
+              "label": "role",
               "type": {
                 "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput1"
+                  "accesscontrol_external",
+                  "GrantRoleInput1"
                 ],
-                "type": 12
+                "type": 1
               }
             },
             {
-              "label": "hash",
+              "label": "account",
               "type": {
                 "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput2"
-                ],
-                "type": 12
-              }
-            },
-            {
-              "label": "applicant",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput3"
+                  "accesscontrol_external",
+                  "GrantRoleInput2"
                 ],
                 "type": 6
-              }
-            },
-            {
-              "label": "requested_token",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput4"
-                ],
-                "type": 6
-              }
-            },
-            {
-              "label": "value_in_usd",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput5"
-                ],
-                "type": 15
-              }
-            },
-            {
-              "label": "requested_value",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput6"
-                ],
-                "type": 16
-              }
-            },
-            {
-              "label": "payment_type",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput7"
-                ],
-                "type": 17
-              }
-            },
-            {
-              "label": "payment_schedule",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput8"
-                ],
-                "type": 18
-              }
-            },
-            {
-              "label": "payee_accounts",
-              "type": {
-                "displayName": [
-                  "treasuremanager_external",
-                  "AddJobInput9"
-                ],
-                "type": 20
               }
             }
           ],
           "docs": [
-            "Add Job Should be only for ADMIN"
+            " Grants `role` to `account`.",
+            "",
+            " On success a `RoleGranted` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `MissingRole` error if caller can't grant the role.",
+            " Returns with `RoleRedundant` error `account` has `role`."
           ],
-          "label": "TreasureManager::add_job",
+          "label": "AccessControl::grant_role",
           "mutates": true,
           "payable": false,
           "returnType": {
             "displayName": [
-              "treasuremanager_external",
-              "AddJobOutput"
+              "accesscontrol_external",
+              "GrantRoleOutput"
             ],
             "type": 29
           },
-          "selector": "0x69336f9d"
+          "selector": "0x4ac062fd"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RevokeRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RevokeRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Revokes `role` from `account`.",
+            "",
+            " On success a `RoleRevoked` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `MissingRole` error if caller can't grant the `role` or if `account` doesn't have `role`."
+          ],
+          "label": "AccessControl::revoke_role",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "RevokeRoleOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x6e4f0991"
         },
         {
           "args": [
@@ -1272,34 +1336,6 @@
             "type": 15
           },
           "selector": "0xc1d9ac18"
-        },
-        {
-          "args": [
-            {
-              "label": "role",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "GetRoleAdminInput1"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [
-            " Returns the admin role that controls `role`. See `grant_role` and `revoke_role`."
-          ],
-          "label": "AccessControl::get_role_admin",
-          "mutates": false,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "accesscontrol_external",
-              "GetRoleAdminOutput"
-            ],
-            "type": 1
-          },
-          "selector": "0x83da3bb2"
         },
         {
           "args": [
@@ -1356,87 +1392,26 @@
               "type": {
                 "displayName": [
                   "accesscontrol_external",
-                  "RevokeRoleInput1"
+                  "GetRoleAdminInput1"
                 ],
                 "type": 1
-              }
-            },
-            {
-              "label": "account",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "RevokeRoleInput2"
-                ],
-                "type": 6
               }
             }
           ],
           "docs": [
-            " Revokes `role` from `account`.",
-            "",
-            " On success a `RoleRevoked` event is emitted.",
-            "",
-            " # Errors",
-            "",
-            " Returns with `MissingRole` error if caller can't grant the `role` or if `account` doesn't have `role`."
+            " Returns the admin role that controls `role`. See `grant_role` and `revoke_role`."
           ],
-          "label": "AccessControl::revoke_role",
-          "mutates": true,
+          "label": "AccessControl::get_role_admin",
+          "mutates": false,
           "payable": false,
           "returnType": {
             "displayName": [
               "accesscontrol_external",
-              "RevokeRoleOutput"
+              "GetRoleAdminOutput"
             ],
-            "type": 29
+            "type": 1
           },
-          "selector": "0x6e4f0991"
-        },
-        {
-          "args": [
-            {
-              "label": "role",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "GrantRoleInput1"
-                ],
-                "type": 1
-              }
-            },
-            {
-              "label": "account",
-              "type": {
-                "displayName": [
-                  "accesscontrol_external",
-                  "GrantRoleInput2"
-                ],
-                "type": 6
-              }
-            }
-          ],
-          "docs": [
-            " Grants `role` to `account`.",
-            "",
-            " On success a `RoleGranted` event is emitted.",
-            "",
-            " # Errors",
-            "",
-            " Returns with `MissingRole` error if caller can't grant the role.",
-            " Returns with `RoleRedundant` error `account` has `role`."
-          ],
-          "label": "AccessControl::grant_role",
-          "mutates": true,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "accesscontrol_external",
-              "GrantRoleOutput"
-            ],
-            "type": 29
-          },
-          "selector": "0x4ac062fd"
+          "selector": "0x83da3bb2"
         }
       ]
     },
@@ -1963,11 +1938,6 @@
                 },
                 {
                   "name": "title",
-                  "type": 12,
-                  "typeName": "String"
-                },
-                {
-                  "name": "hash",
                   "type": 12,
                   "typeName": "String"
                 },

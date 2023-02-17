@@ -135,7 +135,6 @@ mod pallet {
         pub fn add_new_voted_job(
             &mut self,
             title: String,
-            hash: String,
             applicant: AccountId,
             requested_token: AccountId,
             value_in_usd: bool,
@@ -147,7 +146,6 @@ mod pallet {
             TreasureManagerRef::add_job(
                 &self.treasury_manager_addr,
                 title,
-                hash,
                 applicant,
                 requested_token,
                 value_in_usd,
@@ -187,17 +185,6 @@ mod pallet {
         ) -> Result<(), AccessControlError> {
             TreasureManagerRef::admin_withdrawal(&self.treasury_manager_addr, amount);
 
-            PSP22Ref::transfer_from_builder(
-                &self.treasury_token_address,
-                self.treasury_manager_addr,
-                self.env().account_id(),
-                amount,
-                Vec::<u8>::new(),
-            )
-            .call_flags(ink_env::CallFlags::default().set_allow_reentry(true))
-            .fire()
-            .unwrap();
-
             Ok(())
         }
 
@@ -219,16 +206,6 @@ mod pallet {
 
             Ok(())
         }
-
-        #[ink(message)]
-        #[modifiers(only_role(ADMIN))]
-        pub fn terminate_treasury_manager(&mut self) -> Result<(), AccessControlError> {
-            //COMMENT OUT THIS FOR HACKATHON TO AVOID ACCIDENTS
-            // TreasureManagerRef::terminate_me(&self.treasury_manager_addr);
-
-            Ok(())
-        }
-
         // *** TREASURY MANAGER ***/
     }
 }
