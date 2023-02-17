@@ -1,0 +1,1363 @@
+{
+  "source": {
+    "hash": "0x6a92c715e319260d47bcf54b5128af29aef9efee547521899aed8081b571396b",
+    "language": "ink! 3.4.0",
+    "compiler": "rustc 1.67.0-nightly"
+  },
+  "contract": {
+    "name": "oracle",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [],
+          "docs": [],
+          "label": "new",
+          "payable": false,
+          "selector": "0x9bae9d5e"
+        }
+      ],
+      "docs": [],
+      "events": [],
+      "messages": [
+        {
+          "args": [
+            {
+              "label": "token_address",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetPoolLiquidityInput1"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::get_pool_liquidity",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetPoolLiquidityOutput"
+            ],
+            "type": 14
+          },
+          "selector": "0x96fc0e13"
+        },
+        {
+          "args": [
+            {
+              "label": "token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "AddPoolLiquidityInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "AddPoolLiquidityInput2"
+                ],
+                "type": 14
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::add_pool_liquidity",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "AddPoolLiquidityOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0x874462f4"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "UpdatePriceInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "UpdatePriceInput2"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "price",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "UpdatePriceInput3"
+                ],
+                "type": 14
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::update_price",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "UpdatePriceOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0xc914db20"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetAveragePriceInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetAveragePriceInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::get_average_price",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetAveragePriceOutput"
+            ],
+            "type": 14
+          },
+          "selector": "0x73ec33f7"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "ActivatePairInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "ActivatePairInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::activate_pair",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "ActivatePairOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0x5c63b4a8"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetAveragePricesConstituentsInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetAveragePricesConstituentsInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::get_average_prices_constituents",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetAveragePricesConstituentsOutput"
+            ],
+            "type": 31
+          },
+          "selector": "0x78534739"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "OracleDex::get_average_length",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetAverageLengthOutput"
+            ],
+            "type": 8
+          },
+          "selector": "0x1ab46913"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetPairStateInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetPairStateInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::get_pair_state",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetPairStateOutput"
+            ],
+            "type": 18
+          },
+          "selector": "0x6cab4991"
+        },
+        {
+          "args": [
+            {
+              "label": "token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "RegisterPoolInput1"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::register_pool",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "RegisterPoolOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0x438a5ca4"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetPairPriceInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetPairPriceInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::get_pair_price",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetPairPriceOutput"
+            ],
+            "type": 14
+          },
+          "selector": "0xa6926fc8"
+        },
+        {
+          "args": [
+            {
+              "label": "token_address",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "GetPoolStateInput1"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::get_pool_state",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "GetPoolStateOutput"
+            ],
+            "type": 18
+          },
+          "selector": "0xe84c69ba"
+        },
+        {
+          "args": [
+            {
+              "label": "token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "WithdrawPoolLiquidityInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "WithdrawPoolLiquidityInput2"
+                ],
+                "type": 14
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::withdraw_pool_liquidity",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "WithdrawPoolLiquidityOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0xdc0017af"
+        },
+        {
+          "args": [
+            {
+              "label": "deposited_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "SwapInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "withdrawn_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "SwapInput2"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "SwapInput3"
+                ],
+                "type": 14
+              }
+            },
+            {
+              "label": "swap_caller",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "SwapInput4"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "use_average_price",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "SwapInput5"
+                ],
+                "type": 18
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::swap",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "SwapOutput"
+            ],
+            "type": 36
+          },
+          "selector": "0x9ec3f85f"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "UpdateAveragePriceInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "UpdateAveragePriceInput2"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "price",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "UpdateAveragePriceInput3"
+                ],
+                "type": 14
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::update_average_price",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "UpdateAveragePriceOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0xb81fc041"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "PausePairInput1"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "oracledex_external",
+                  "PausePairInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "OracleDex::pause_pair",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "oracledex_external",
+              "PausePairOutput"
+            ],
+            "type": 34
+          },
+          "selector": "0xf220f26a"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "struct": {
+                "fields": [
+                  {
+                    "layout": {
+                      "cell": {
+                        "key": "0x75b08c5a00000000000000000000000000000000000000000000000000000000",
+                        "ty": 0
+                      }
+                    },
+                    "name": "admin_roles"
+                  },
+                  {
+                    "layout": {
+                      "struct": {
+                        "fields": [
+                          {
+                            "layout": {
+                              "cell": {
+                                "key": "0x2779f6fc00000000000000000000000000000000000000000000000000000000",
+                                "ty": 4
+                              }
+                            },
+                            "name": "members"
+                          },
+                          {
+                            "layout": {
+                              "enum": {
+                                "dispatchKey": "0x2879f6fc00000000000000000000000000000000000000000000000000000000",
+                                "variants": {
+                                  "0": {
+                                    "fields": [
+                                      {
+                                        "layout": {
+                                          "cell": {
+                                            "key": "0x2979f6fc00000000000000000000000000000000000000000000000000000000",
+                                            "ty": 9
+                                          }
+                                        },
+                                        "name": null
+                                      }
+                                    ]
+                                  },
+                                  "1": {
+                                    "fields": []
+                                  }
+                                }
+                              }
+                            },
+                            "name": "_reserved"
+                          }
+                        ]
+                      }
+                    },
+                    "name": "members"
+                  },
+                  {
+                    "layout": {
+                      "enum": {
+                        "dispatchKey": "0x76b08c5a00000000000000000000000000000000000000000000000000000000",
+                        "variants": {
+                          "0": {
+                            "fields": [
+                              {
+                                "layout": {
+                                  "cell": {
+                                    "key": "0x77b08c5a00000000000000000000000000000000000000000000000000000000",
+                                    "ty": 9
+                                  }
+                                },
+                                "name": null
+                              }
+                            ]
+                          },
+                          "1": {
+                            "fields": []
+                          }
+                        }
+                      }
+                    },
+                    "name": "_reserved"
+                  }
+                ]
+              }
+            },
+            "name": "access"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 12
+              }
+            },
+            "name": "pair_price"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 17
+              }
+            },
+            "name": "pair_state"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0200000000000000000000000000000000000000000000000000000000000000",
+                "ty": 21
+              }
+            },
+            "name": "pool_liquidity"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                "ty": 24
+              }
+            },
+            "name": "pool_state"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
+                "ty": 8
+              }
+            },
+            "name": "average_length"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
+                "ty": 27
+              }
+            },
+            "name": "average_prices_pointer"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0600000000000000000000000000000000000000000000000000000000000000",
+                "ty": 30
+              }
+            },
+            "name": "average_prices_constituents"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0700000000000000000000000000000000000000000000000000000000000000",
+                "ty": 12
+              }
+            },
+            "name": "average_prices"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 2
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 1
+            },
+            {
+              "name": "V",
+              "type": 1
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "primitive": "u32"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 3
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "tuple": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 10
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 5
+            },
+            {
+              "name": "V",
+              "type": 9
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "tuple": [
+              1,
+              6
+            ]
+          }
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 7,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_env",
+            "types",
+            "AccountId"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 8
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "tuple": []
+          }
+        }
+      },
+      {
+        "id": 10,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 11
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "type": {
+          "def": {
+            "tuple": [
+              5,
+              9
+            ]
+          }
+        }
+      },
+      {
+        "id": 12,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 15
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 13
+            },
+            {
+              "name": "V",
+              "type": 14
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 13,
+        "type": {
+          "def": {
+            "tuple": [
+              6,
+              6
+            ]
+          }
+        }
+      },
+      {
+        "id": 14,
+        "type": {
+          "def": {
+            "primitive": "u128"
+          }
+        }
+      },
+      {
+        "id": 15,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 16
+            }
+          }
+        }
+      },
+      {
+        "id": 16,
+        "type": {
+          "def": {
+            "tuple": [
+              13,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "id": 17,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 19
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 13
+            },
+            {
+              "name": "V",
+              "type": 18
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 18,
+        "type": {
+          "def": {
+            "primitive": "bool"
+          }
+        }
+      },
+      {
+        "id": 19,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 20
+            }
+          }
+        }
+      },
+      {
+        "id": 20,
+        "type": {
+          "def": {
+            "tuple": [
+              13,
+              18
+            ]
+          }
+        }
+      },
+      {
+        "id": 21,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 22
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 6
+            },
+            {
+              "name": "V",
+              "type": 14
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 22,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 23
+            }
+          }
+        }
+      },
+      {
+        "id": 23,
+        "type": {
+          "def": {
+            "tuple": [
+              6,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "id": 24,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 25
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 6
+            },
+            {
+              "name": "V",
+              "type": 18
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 25,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 26
+            }
+          }
+        }
+      },
+      {
+        "id": 26,
+        "type": {
+          "def": {
+            "tuple": [
+              6,
+              18
+            ]
+          }
+        }
+      },
+      {
+        "id": 27,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 28
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 13
+            },
+            {
+              "name": "V",
+              "type": 8
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 28,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 29
+            }
+          }
+        }
+      },
+      {
+        "id": 29,
+        "type": {
+          "def": {
+            "tuple": [
+              13,
+              8
+            ]
+          }
+        }
+      },
+      {
+        "id": 30,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 32
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 13
+            },
+            {
+              "name": "V",
+              "type": 31
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 31,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 14
+            }
+          }
+        }
+      },
+      {
+        "id": 32,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 33
+            }
+          }
+        }
+      },
+      {
+        "id": 33,
+        "type": {
+          "def": {
+            "tuple": [
+              13,
+              31
+            ]
+          }
+        }
+      },
+      {
+        "id": 34,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 9
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 35
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 9
+            },
+            {
+              "name": "E",
+              "type": 35
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 35,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "InvalidCaller"
+                },
+                {
+                  "index": 1,
+                  "name": "MissingRole"
+                },
+                {
+                  "index": 2,
+                  "name": "RoleRedundant"
+                }
+              ]
+            }
+          },
+          "path": [
+            "openbrush_contracts",
+            "traits",
+            "errors",
+            "access_control",
+            "AccessControlError"
+          ]
+        }
+      },
+      {
+        "id": 36,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 14
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 35
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 14
+            },
+            {
+              "name": "E",
+              "type": 35
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      }
+    ]
+  }
+}

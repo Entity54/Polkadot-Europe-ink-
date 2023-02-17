@@ -45,7 +45,6 @@ pub mod treasury_manager {
     pub struct JobInfo {
         id: u32,
         title: String,
-        hash: String,
         applicant: AccountId,
         requested_token: AccountId,
         value_in_usd: bool,
@@ -171,7 +170,6 @@ pub mod treasury_manager {
         fn add_job(
             &mut self,
             title: String,
-            hash: String,
             applicant: AccountId,
             requested_token: AccountId,
             value_in_usd: bool,
@@ -194,7 +192,6 @@ pub mod treasury_manager {
             let job = JobInfo {
                 id: self.next_id,
                 title,
-                hash,
                 applicant,
                 requested_token,
                 value_in_usd: _value_in_usd,

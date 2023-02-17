@@ -135,7 +135,6 @@ mod pallet {
         pub fn add_new_voted_job(
             &mut self,
             title: String,
-            hash: String,
             applicant: AccountId,
             requested_token: AccountId,
             value_in_usd: bool,
@@ -147,7 +146,6 @@ mod pallet {
             TreasureManagerRef::add_job(
                 &self.treasury_manager_addr,
                 title,
-                hash,
                 applicant,
                 requested_token,
                 value_in_usd,

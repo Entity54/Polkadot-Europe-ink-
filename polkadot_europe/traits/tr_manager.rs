@@ -32,6 +32,7 @@ pub trait TreasureManager {
     fn add_job(
         &mut self,
         title: String,
+        hash: String,
         applicant: AccountId,
         requested_token: AccountId,
         value_in_usd: bool,

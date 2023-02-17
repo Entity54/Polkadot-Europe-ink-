@@ -1,0 +1,2244 @@
+{
+  "source": {
+    "hash": "0xe5da540624b2661161e7d3fea34ea2f7f3a92765de1844a3beb667217956da0f",
+    "language": "ink! 3.4.0",
+    "compiler": "rustc 1.67.0-nightly"
+  },
+  "contract": {
+    "name": "treasury_manager",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [
+            {
+              "label": "contract_administrator",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "contract_manager",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "treasury_token_symbol",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 12
+              }
+            },
+            {
+              "label": "treasury_token_address",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "usdt_token_address",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "oracle_dex_address",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "liabilities_threshold_level",
+              "type": {
+                "displayName": [
+                  "u8"
+                ],
+                "type": 8
+              }
+            }
+          ],
+          "docs": [],
+          "label": "new",
+          "payable": false,
+          "selector": "0x9bae9d5e"
+        }
+      ],
+      "docs": [],
+      "events": [
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "level_type",
+              "type": {
+                "displayName": [
+                  "u8"
+                ],
+                "type": 8
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "current_balance",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "top_up_amount",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "liability_threshold_breached_top"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "level_type",
+              "type": {
+                "displayName": [
+                  "u8"
+                ],
+                "type": 8
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "current_balance",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "liability",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "liability_threshold_breached_med"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "job_id",
+              "type": {
+                "displayName": [
+                  "u32"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "to",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "ev_native_payment"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "job_id",
+              "type": {
+                "displayName": [
+                  "u32"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "to",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "ev_native_usd_payment"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "job_id",
+              "type": {
+                "displayName": [
+                  "u32"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "to",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "docs": [],
+              "indexed": true,
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "ev_non_native_payment"
+        }
+      ],
+      "messages": [
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_fake_timestamp",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "u64"
+            ],
+            "type": 19
+          },
+          "selector": "0x0b10c8a6"
+        },
+        {
+          "args": [
+            {
+              "label": "fresh_timestmap",
+              "type": {
+                "displayName": [
+                  "u64"
+                ],
+                "type": 19
+              }
+            }
+          ],
+          "docs": [],
+          "label": "set_fake_timestamp",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x92e1aeaf"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_block_timestamp",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "u64"
+            ],
+            "type": 19
+          },
+          "selector": "0x0224175f"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "check_open_jobs",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x6c4123b1"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "check_pending_jobs",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x3c27966e"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_admin_account",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "AccountId"
+            ],
+            "type": 6
+          },
+          "selector": "0x48f0b6b6"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_manager_account",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "AccountId"
+            ],
+            "type": 6
+          },
+          "selector": "0x675f5fce"
+        },
+        {
+          "args": [
+            {
+              "label": "id",
+              "type": {
+                "displayName": [
+                  "u32"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "get_job_info",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "JobInfo"
+            ],
+            "type": 14
+          },
+          "selector": "0x8d35273f"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_next_id",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "u32"
+            ],
+            "type": 1
+          },
+          "selector": "0xd5bbc5ec"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_treasury_token_symbol",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "String"
+            ],
+            "type": 12
+          },
+          "selector": "0xb5f4d75f"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_treasury_token",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "AccountId"
+            ],
+            "type": 6
+          },
+          "selector": "0x603933c1"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_open_jobs_ids",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 23
+          },
+          "selector": "0xb6e221cf"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_pending_jobs_ids",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 23
+          },
+          "selector": "0xab7d27fe"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_completed_jobs_ids",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 23
+          },
+          "selector": "0xbcdb519c"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_native_payments_ids",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 23
+          },
+          "selector": "0xff970976"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_native_usd_payments_ids",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 23
+          },
+          "selector": "0xb42deb93"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_non_native_payments_ids",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 23
+          },
+          "selector": "0xb4755e11"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_non_native_tokens_vec",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 20
+          },
+          "selector": "0xc5449b19"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_liability_thresholds",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 12
+          },
+          "selector": "0x0d0433bb"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_liability_health",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 12
+          },
+          "selector": "0x35cb0b38"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_liability_in_usdt_tokens_treasury",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 28
+          },
+          "selector": "0x2224263f"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_liability_in_usdt_tokens",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 28
+          },
+          "selector": "0xa46f84b6"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_liability_in_treasury",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 28
+          },
+          "selector": "0xc88059d5"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_check_points_intervals",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 18
+          },
+          "selector": "0xd50df548"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_foreign_assets_vec",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 27
+          },
+          "selector": "0x4687c9b8"
+        },
+        {
+          "args": [
+            {
+              "label": "symbol",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 12
+              }
+            }
+          ],
+          "docs": [],
+          "label": "get_foreign_asset_account",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "AccountId"
+            ],
+            "type": 6
+          },
+          "selector": "0x88ba2fa8"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_oracle_dex_address",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "AccountId"
+            ],
+            "type": 6
+          },
+          "selector": "0x8234489d"
+        },
+        {
+          "args": [
+            {
+              "label": "token_address",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "get_balance",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Balance"
+            ],
+            "type": 16
+          },
+          "selector": "0xea817e65"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "make_native_payments",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0x0508449b"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "make_native_usd_payments",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0x34b8317f"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "make_non_native_payments",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0x9bd7dd29"
+        },
+        {
+          "args": [
+            {
+              "label": "liabilities_threshold_level1",
+              "type": {
+                "displayName": [
+                  "u8"
+                ],
+                "type": 8
+              }
+            }
+          ],
+          "docs": [],
+          "label": "set_liabilities_thresholds",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0xa13ecb87"
+        },
+        {
+          "args": [
+            {
+              "label": "checkpoint1",
+              "type": {
+                "displayName": [
+                  "u64"
+                ],
+                "type": 19
+              }
+            },
+            {
+              "label": "checkpoint2",
+              "type": {
+                "displayName": [
+                  "u64"
+                ],
+                "type": 19
+              }
+            },
+            {
+              "label": "checkpoint3",
+              "type": {
+                "displayName": [
+                  "u64"
+                ],
+                "type": 19
+              }
+            }
+          ],
+          "docs": [],
+          "label": "set_check_points_intervals",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0xd5e8d578"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "calculate_liabilities",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0xe763d9db"
+        },
+        {
+          "args": [
+            {
+              "label": "token_symbol",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 12
+              }
+            },
+            {
+              "label": "token_address",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "register_foreign_asset",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0x77b40c36"
+        },
+        {
+          "args": [
+            {
+              "label": "oracle_dex_address",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            "Set the Oracle_DEX Address that will be used"
+          ],
+          "label": "set_oracle_dex_address",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 29
+          },
+          "selector": "0x90cd5b6e"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            "Get Pair Price from Oracle"
+          ],
+          "label": "get_price_for_pair",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Balance"
+            ],
+            "type": 16
+          },
+          "selector": "0xebc08e81"
+        },
+        {
+          "args": [
+            {
+              "label": "base_token",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "quote_token",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            "Get Average Pair Price from Oracle"
+          ],
+          "label": "get_average_price_for_pair",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Balance"
+            ],
+            "type": 16
+          },
+          "selector": "0x644fc23e"
+        },
+        {
+          "args": [
+            {
+              "label": "deposited_token",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "withdrawn_token",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 16
+              }
+            },
+            {
+              "label": "use_average_price",
+              "type": {
+                "displayName": [
+                  "bool"
+                ],
+                "type": 15
+              }
+            }
+          ],
+          "docs": [],
+          "label": "execute_swap",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0xf8a09e9c"
+        },
+        {
+          "args": [
+            {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AdminWithdrawalInput1"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "TreasureManager::admin_withdrawal",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "treasuremanager_external",
+              "AdminWithdrawalOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x1759d0ee"
+        },
+        {
+          "args": [
+            {
+              "label": "amount",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "MakeDepositInput1"
+                ],
+                "type": 16
+              }
+            }
+          ],
+          "docs": [],
+          "label": "TreasureManager::make_deposit",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "treasuremanager_external",
+              "MakeDepositOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x3a99e1da"
+        },
+        {
+          "args": [
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "SetManagerInput1"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [],
+          "label": "TreasureManager::set_manager",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "treasuremanager_external",
+              "SetManagerOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x9d182f68"
+        },
+        {
+          "args": [
+            {
+              "label": "title",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput1"
+                ],
+                "type": 12
+              }
+            },
+            {
+              "label": "applicant",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput2"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "requested_token",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput3"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "value_in_usd",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput4"
+                ],
+                "type": 15
+              }
+            },
+            {
+              "label": "requested_value",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput5"
+                ],
+                "type": 16
+              }
+            },
+            {
+              "label": "payment_type",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput6"
+                ],
+                "type": 17
+              }
+            },
+            {
+              "label": "payment_schedule",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput7"
+                ],
+                "type": 18
+              }
+            },
+            {
+              "label": "payee_accounts",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "AddJobInput8"
+                ],
+                "type": 20
+              }
+            }
+          ],
+          "docs": [
+            "Add Job Should be only for ADMIN"
+          ],
+          "label": "TreasureManager::add_job",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "treasuremanager_external",
+              "AddJobOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x69336f9d"
+        },
+        {
+          "args": [
+            {
+              "label": "id",
+              "type": {
+                "displayName": [
+                  "treasuremanager_external",
+                  "RemoveJobInfoInput1"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "TreasureManager::remove_job_info",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "treasuremanager_external",
+              "RemoveJobInfoOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x8d7d1b51"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "GrantRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "GrantRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Grants `role` to `account`.",
+            "",
+            " On success a `RoleGranted` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `MissingRole` error if caller can't grant the role.",
+            " Returns with `RoleRedundant` error `account` has `role`."
+          ],
+          "label": "AccessControl::grant_role",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "GrantRoleOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x4ac062fd"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RevokeRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RevokeRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Revokes `role` from `account`.",
+            "",
+            " On success a `RoleRevoked` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `MissingRole` error if caller can't grant the `role` or if `account` doesn't have `role`."
+          ],
+          "label": "AccessControl::revoke_role",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "RevokeRoleOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0x6e4f0991"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "HasRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "address",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "HasRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Returns `true` if `account` has been granted `role`."
+          ],
+          "label": "AccessControl::has_role",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "HasRoleOutput"
+            ],
+            "type": 15
+          },
+          "selector": "0xc1d9ac18"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RenounceRoleInput1"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "label": "account",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "RenounceRoleInput2"
+                ],
+                "type": 6
+              }
+            }
+          ],
+          "docs": [
+            " Revokes `role` from the calling account.",
+            " Roles are often managed via `grant_role` and `revoke_role`: this function's",
+            " purpose is to provide a mechanism for accounts to lose their privileges",
+            " if they are compromised (such as when a trusted device is misplaced).",
+            "",
+            " On success a `RoleRevoked` event is emitted.",
+            "",
+            " # Errors",
+            "",
+            " Returns with `InvalidCaller` error if caller is not `account`.",
+            " Returns with `MissingRole` error if `account` doesn't have `role`."
+          ],
+          "label": "AccessControl::renounce_role",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "RenounceRoleOutput"
+            ],
+            "type": 29
+          },
+          "selector": "0xeaf1248a"
+        },
+        {
+          "args": [
+            {
+              "label": "role",
+              "type": {
+                "displayName": [
+                  "accesscontrol_external",
+                  "GetRoleAdminInput1"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [
+            " Returns the admin role that controls `role`. See `grant_role` and `revoke_role`."
+          ],
+          "label": "AccessControl::get_role_admin",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "accesscontrol_external",
+              "GetRoleAdminOutput"
+            ],
+            "type": 1
+          },
+          "selector": "0x83da3bb2"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "struct": {
+                "fields": [
+                  {
+                    "layout": {
+                      "cell": {
+                        "key": "0x75b08c5a00000000000000000000000000000000000000000000000000000000",
+                        "ty": 0
+                      }
+                    },
+                    "name": "admin_roles"
+                  },
+                  {
+                    "layout": {
+                      "struct": {
+                        "fields": [
+                          {
+                            "layout": {
+                              "cell": {
+                                "key": "0x2779f6fc00000000000000000000000000000000000000000000000000000000",
+                                "ty": 4
+                              }
+                            },
+                            "name": "members"
+                          },
+                          {
+                            "layout": {
+                              "enum": {
+                                "dispatchKey": "0x2879f6fc00000000000000000000000000000000000000000000000000000000",
+                                "variants": {
+                                  "0": {
+                                    "fields": [
+                                      {
+                                        "layout": {
+                                          "cell": {
+                                            "key": "0x2979f6fc00000000000000000000000000000000000000000000000000000000",
+                                            "ty": 9
+                                          }
+                                        },
+                                        "name": null
+                                      }
+                                    ]
+                                  },
+                                  "1": {
+                                    "fields": []
+                                  }
+                                }
+                              }
+                            },
+                            "name": "_reserved"
+                          }
+                        ]
+                      }
+                    },
+                    "name": "members"
+                  },
+                  {
+                    "layout": {
+                      "enum": {
+                        "dispatchKey": "0x76b08c5a00000000000000000000000000000000000000000000000000000000",
+                        "variants": {
+                          "0": {
+                            "fields": [
+                              {
+                                "layout": {
+                                  "cell": {
+                                    "key": "0x77b08c5a00000000000000000000000000000000000000000000000000000000",
+                                    "ty": 9
+                                  }
+                                },
+                                "name": null
+                              }
+                            ]
+                          },
+                          "1": {
+                            "fields": []
+                          }
+                        }
+                      }
+                    },
+                    "name": "_reserved"
+                  }
+                ]
+              }
+            },
+            "name": "access"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 6
+              }
+            },
+            "name": "contract_administrator"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 6
+              }
+            },
+            "name": "contract_manager"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0200000000000000000000000000000000000000000000000000000000000000",
+                "ty": 1
+              }
+            },
+            "name": "next_id"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                "ty": 12
+              }
+            },
+            "name": "treasury_token_symbol"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
+                "ty": 6
+              }
+            },
+            "name": "treasury_token_address"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
+                "ty": 13
+              }
+            },
+            "name": "jobs"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0600000000000000000000000000000000000000000000000000000000000000",
+                "ty": 23
+              }
+            },
+            "name": "open_jobs_ids"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0700000000000000000000000000000000000000000000000000000000000000",
+                "ty": 23
+              }
+            },
+            "name": "pending_jobs_ids"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0800000000000000000000000000000000000000000000000000000000000000",
+                "ty": 23
+              }
+            },
+            "name": "completed_jobs_ids"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0900000000000000000000000000000000000000000000000000000000000000",
+                "ty": 23
+              }
+            },
+            "name": "native_payments_ids"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0a00000000000000000000000000000000000000000000000000000000000000",
+                "ty": 23
+              }
+            },
+            "name": "native_payments_usd_ids"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0b00000000000000000000000000000000000000000000000000000000000000",
+                "ty": 23
+              }
+            },
+            "name": "non_native_payments_ids"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0c00000000000000000000000000000000000000000000000000000000000000",
+                "ty": 20
+              }
+            },
+            "name": "non_native_tokens_vec"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0d00000000000000000000000000000000000000000000000000000000000000",
+                "ty": 6
+              }
+            },
+            "name": "oracle_dex_address"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0e00000000000000000000000000000000000000000000000000000000000000",
+                "ty": 24
+              }
+            },
+            "name": "foreign_assets"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0f00000000000000000000000000000000000000000000000000000000000000",
+                "ty": 27
+              }
+            },
+            "name": "foreign_assets_vec"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 18
+              }
+            },
+            "name": "check_points_intervals"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 28
+              }
+            },
+            "name": "liability_in_treasury"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1200000000000000000000000000000000000000000000000000000000000000",
+                "ty": 28
+              }
+            },
+            "name": "liability_in_usdt_tokens"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1300000000000000000000000000000000000000000000000000000000000000",
+                "ty": 28
+              }
+            },
+            "name": "liability_in_usdt_tokens_treasury"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1400000000000000000000000000000000000000000000000000000000000000",
+                "ty": 12
+              }
+            },
+            "name": "liability_health"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1500000000000000000000000000000000000000000000000000000000000000",
+                "ty": 12
+              }
+            },
+            "name": "liabilities_thresholds"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x1600000000000000000000000000000000000000000000000000000000000000",
+                "ty": 19
+              }
+            },
+            "name": "fake_timestamp"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 2
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 1
+            },
+            {
+              "name": "V",
+              "type": 1
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "primitive": "u32"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 3
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "tuple": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 10
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 5
+            },
+            {
+              "name": "V",
+              "type": 9
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "tuple": [
+              1,
+              6
+            ]
+          }
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 7,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_env",
+            "types",
+            "AccountId"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 8
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "tuple": []
+          }
+        }
+      },
+      {
+        "id": 10,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 11
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "type": {
+          "def": {
+            "tuple": [
+              5,
+              9
+            ]
+          }
+        }
+      },
+      {
+        "id": 12,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 8
+            }
+          }
+        }
+      },
+      {
+        "id": 13,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 21
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 1
+            },
+            {
+              "name": "V",
+              "type": 14
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 14,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "name": "id",
+                  "type": 1,
+                  "typeName": "u32"
+                },
+                {
+                  "name": "title",
+                  "type": 12,
+                  "typeName": "String"
+                },
+                {
+                  "name": "applicant",
+                  "type": 6,
+                  "typeName": "AccountId"
+                },
+                {
+                  "name": "requested_token",
+                  "type": 6,
+                  "typeName": "AccountId"
+                },
+                {
+                  "name": "value_in_usd",
+                  "type": 15,
+                  "typeName": "bool"
+                },
+                {
+                  "name": "requested_value",
+                  "type": 16,
+                  "typeName": "Balance"
+                },
+                {
+                  "name": "payment_type",
+                  "type": 17,
+                  "typeName": "PaymentType"
+                },
+                {
+                  "name": "payment_schedule",
+                  "type": 18,
+                  "typeName": "Vec<u64>"
+                },
+                {
+                  "name": "payee_accounts",
+                  "type": 20,
+                  "typeName": "Vec<AccountId>"
+                },
+                {
+                  "name": "next_installment_pointer",
+                  "type": 1,
+                  "typeName": "u32"
+                },
+                {
+                  "name": "position_in_vec",
+                  "type": 1,
+                  "typeName": "u32"
+                }
+              ]
+            }
+          },
+          "path": [
+            "treasury_manager",
+            "treasury_manager",
+            "JobInfo"
+          ]
+        }
+      },
+      {
+        "id": 15,
+        "type": {
+          "def": {
+            "primitive": "bool"
+          }
+        }
+      },
+      {
+        "id": 16,
+        "type": {
+          "def": {
+            "primitive": "u128"
+          }
+        }
+      },
+      {
+        "id": 17,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "OneOffFutureTime"
+                },
+                {
+                  "index": 1,
+                  "name": "Instalments"
+                }
+              ]
+            }
+          },
+          "path": [
+            "polkadot_europe",
+            "traits",
+            "tr_manager",
+            "PaymentType"
+          ]
+        }
+      },
+      {
+        "id": 18,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 19
+            }
+          }
+        }
+      },
+      {
+        "id": 19,
+        "type": {
+          "def": {
+            "primitive": "u64"
+          }
+        }
+      },
+      {
+        "id": 20,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 6
+            }
+          }
+        }
+      },
+      {
+        "id": 21,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 22
+            }
+          }
+        }
+      },
+      {
+        "id": 22,
+        "type": {
+          "def": {
+            "tuple": [
+              1,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "id": 23,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 1
+            }
+          }
+        }
+      },
+      {
+        "id": 24,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 25
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 12
+            },
+            {
+              "name": "V",
+              "type": 6
+            }
+          ],
+          "path": [
+            "openbrush_lang",
+            "storage",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 25,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 26
+            }
+          }
+        }
+      },
+      {
+        "id": 26,
+        "type": {
+          "def": {
+            "tuple": [
+              12,
+              6
+            ]
+          }
+        }
+      },
+      {
+        "id": 27,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 12
+            }
+          }
+        }
+      },
+      {
+        "id": 28,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 16
+            }
+          }
+        }
+      },
+      {
+        "id": 29,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 9
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 30
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 9
+            },
+            {
+              "name": "E",
+              "type": 30
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 30,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "InvalidCaller"
+                },
+                {
+                  "index": 1,
+                  "name": "MissingRole"
+                },
+                {
+                  "index": 2,
+                  "name": "RoleRedundant"
+                }
+              ]
+            }
+          },
+          "path": [
+            "openbrush_contracts",
+            "traits",
+            "errors",
+            "access_control",
+            "AccessControlError"
+          ]
+        }
+      }
+    ]
+  }
+}
