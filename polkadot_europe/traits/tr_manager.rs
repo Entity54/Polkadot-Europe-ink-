@@ -50,4 +50,7 @@ pub trait TreasureManager {
 
     #[ink(message)]
     fn make_deposit(&mut self, amount: Balance) -> Result<(), AccessControlError>;
+
+    #[ink(message)]
+    fn terminate_me(&mut self) -> Result<(), AccessControlError>;
 }

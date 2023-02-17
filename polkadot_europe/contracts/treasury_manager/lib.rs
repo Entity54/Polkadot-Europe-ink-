@@ -223,16 +223,27 @@ pub mod treasury_manager {
         #[ink(message)]
         #[modifiers(only_role(ADMIN))]
         fn admin_withdrawal(&mut self, amount: Balance) -> Result<(), AccessControlError> {
-            PSP22Ref::transfer(
-                &self.treasury_token_address,
-                self.env().caller(),
-                amount,
-                Vec::<u8>::new(),
-            )
-            .expect("Transfer to ADMIN did not go well");
+            //APPROVE FIRST
+            PSP22Ref::approve(&self.treasury_token_address, self.env().caller(), amount)
+                .expect("Approval for ADMIN withdrawing treasury_token did not go well");
+
+            // PSP22Ref::transfer(
+            //     &self.treasury_token_address,
+            //     self.env().caller(),
+            //     amount,
+            //     Vec::<u8>::new(),
+            // )
+            // .expect("Transfer to ADMIN did not go well");
 
             //SHOULD EMMIT EVENT
 
+            Ok(())
+        }
+
+        #[ink(message)]
+        #[modifiers(only_role(ADMIN))]
+        fn terminate_me(&mut self) -> Result<(), AccessControlError> {
+            self.env().terminate_contract(self.env().caller());
             Ok(())
         }
 
