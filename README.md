@@ -42,7 +42,9 @@ The second repo at https://github.com/Entity54/PolkadotEurope-FrontEnd contains 
 
 Note: By design, only the Admin account and Manager of the ink! smart contracts can interact with these. Details of these account are shown shorlty
 
-## TODO ADD ACCOUNT FILES HERE and link to folder
+## Admin ACCOUNT
+
+https://github.com/Entity54/Polkadot-Europe-ink-/tree/main/ink!_smart_contracts/Arisu2
 
 <br>
 
